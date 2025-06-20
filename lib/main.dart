@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:oev_mobile_app/config/constants/environment.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oev_mobile_app/config/router/app_router.dart';
-import 'package:oev_mobile_app/presentation/screens/login/providers/auth_provider.dart';
+import 'package:oev_mobile_app/config/theme/app_theme.dart';
 
 void main() async {
   await Environment.initEnvironment();
@@ -21,6 +21,7 @@ class MyApp extends ConsumerWidget {
       title: 'OEV App',
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
+      theme: AppTheme(selectedColor: 0).getTheme(),
     );
   }
 }
