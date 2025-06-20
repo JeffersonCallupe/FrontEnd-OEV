@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:oev_mobile_app/infrastructure/inputs/email.dart';
 import 'package:oev_mobile_app/infrastructure/inputs/password.dart';
-import 'package:oev_mobile_app/presentation/screens/login/providers/auth_provider.dart';
+import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
 
 final loginFormProvider = StateNotifierProvider.autoDispose<LoginFormNotifier, LoginFormState>((ref) {
   final loginUserCallback = ref.watch(authProvider.notifier).loginUser;
