@@ -3,15 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/courses_providers/courses_provider.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/course_card.dart';
+import 'package:go_router/go_router.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/recommended_courses_slider.dart';
 
-// Providers
 final searchQueryProvider = StateProvider<String>((ref) => "");
 final selectedCategoryProvider = StateProvider<String?>((ref) => null);
 
+// coment
+
 class CourseList extends ConsumerWidget {
   const CourseList({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = Theme.of(context).colorScheme;
@@ -20,7 +21,6 @@ class CourseList extends ConsumerWidget {
     final selectedCategory = ref.watch(selectedCategoryProvider);
     final loggedUser = ref.read(authProvider).token;
 
-    // Reset category on auth change
     ref.listen(authProvider, (previous, next) {
       ref.read(selectedCategoryProvider.notifier).state = null;
     });
@@ -31,36 +31,32 @@ class CourseList extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // 👋 Bienvenida
             Text(
-              'Bienvenido, ${loggedUser?.name ?? 'Usuario'}',
+              'Bienvenido, ${loggedUser?.name ?? 'User'}',
               style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
             const Text(
               'Tenemos sugerencias para ti basadas en tus intereses',
               style: TextStyle(color: Colors.white70),
             ),
             const SizedBox(height: 20),
-
-            // 🎠 Carrusel de recomendados
             const SizedBox(
               height: 180,
               child: RecommendedCoursesSlider(),
             ),
-            const SizedBox(height: 20),
-
-            // 🔍 Campo de búsqueda
+            const SizedBox(height: 10),
             Row(
               children: [
                 Expanded(
                   child: TextField(
                     cursorColor: colors.primary,
                     onChanged: (value) {
-                      ref.read(searchQueryProvider.notifier).state = value;
+                      ref
+                          .read(searchQueryProvider.notifier)
+                          .update((state) => value);
                     },
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
@@ -79,8 +75,6 @@ class CourseList extends ConsumerWidget {
                     ),
                   ),
                 ),
-
-                // 🧪 Botón filtro de categorías
                 IconButton(
                   icon: const Icon(Icons.filter_list, color: Colors.white),
                   onPressed: () {
@@ -131,8 +125,7 @@ class CourseList extends ConsumerWidget {
                 ),
               ],
             ),
-
-            // 🏷️ Etiqueta de categoría seleccionada
+            const SizedBox(height: 15),
             if (selectedCategory != null)
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 12),
@@ -161,10 +154,7 @@ class CourseList extends ConsumerWidget {
                   ],
                 ),
               ),
-
             const SizedBox(height: 15),
-
-            // 📦 Cursos filtrados
             asyncCourses.when(
               data: (courses) {
                 final filteredCourses = courses.where((course) {
@@ -209,4 +199,3 @@ class CourseList extends ConsumerWidget {
     );
   }
 }
-//
