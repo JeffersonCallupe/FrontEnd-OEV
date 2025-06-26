@@ -4,13 +4,13 @@ import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/recommended_courses_slider.dart';
 
 final searchQueryProvider = StateProvider<String>((ref) => "");
-final selectedCategoryProvider = StateProvider<String?>((ref) => null);
 
 class CourseList extends ConsumerWidget {
   const CourseList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
     final loggedUser = ref.read(authProvider).token;
 
     return SingleChildScrollView(
@@ -38,6 +38,30 @@ class CourseList extends ConsumerWidget {
             const SizedBox(
               height: 180,
               child: RecommendedCoursesSlider(),
+            ),
+            const SizedBox(height: 20),
+
+            // 🔍 Campo de búsqueda
+            TextField(
+              cursorColor: colors.primary,
+              onChanged: (value) {
+                ref.read(searchQueryProvider.notifier).state = value;
+              },
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
+                hintText: 'Buscar por curso',
+                hintStyle: TextStyle(color: Colors.grey),
+                prefixIcon: Icon(Icons.search, color: Colors.white),
+                filled: true,
+                fillColor: Color(0xff2A2D3E),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                ),
+              ),
             ),
           ],
         ),
