@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
-import 'package:oev_mobile_app/presentation/widgets/conference/conference_list.dart';
-import 'package:oev_mobile_app/presentation/widgets/course/course_list.dart';
-import 'package:oev_mobile_app/presentation/widgets/course/my_courses.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   static const String name = 'home_screen';
@@ -143,15 +140,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     switch (_selectedIndex) {
       case 0:
         return const Center(
-          child: CourseList(),
-        );
-      case 1:
-        return const Center(
-          child: MyCourses(),
-        );
-      case 2:
-        return const Center(
-          child: ConferenceList(),
+          child: Text('Inicio', style: TextStyle(color: Colors.white)),
         );
       default:
         return const Center(

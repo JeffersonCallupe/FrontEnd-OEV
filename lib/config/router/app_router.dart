@@ -7,7 +7,6 @@ import 'package:oev_mobile_app/presentation/screens/login/login_screen.dart';
 import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
 import 'package:oev_mobile_app/presentation/screens/profile/profile_screen.dart';
 import 'package:oev_mobile_app/presentation/screens/register/register_screen.dart';
-import 'package:oev_mobile_app/presentation/widgets/course/course_creation.dart';
 
 final goRouterProvider = Provider((ref) {
   final goRouterNotifier = ref.read(goRouterNotifierProvider);
@@ -39,10 +38,6 @@ final goRouterProvider = Provider((ref) {
         path: '/profile',
         name: ProfileScreen.name,
         builder: (context, state) => const ProfileScreen(),
-      ),
-      GoRoute(
-        path: '/course/create',
-        builder: (context, state) => CreateCourseScreen(),
       ),
     ],
     redirect: (context, state) {

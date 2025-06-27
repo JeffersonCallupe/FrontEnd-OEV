@@ -89,11 +89,15 @@ class _RegisterForm extends ConsumerWidget {
                   dropdownColor: Colors.grey[800],
                   value: ref.watch(registerFormProvider).selectedRole,
                   elevation: 16,
-                  style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                  style: const TextStyle(
+                      color: Color.fromARGB(255, 255, 255, 255)),
                   onChanged: (String? newValue) {
-                    ref.read(registerFormProvider.notifier).onRoleChanged(newValue!);
+                    ref
+                        .read(registerFormProvider.notifier)
+                        .onRoleChanged(newValue!);
                   },
-                  items: <String>['student', 'instructor', 'administrative'].map<DropdownMenuItem<String>>((String value) {
+                  items: <String>['student', 'instructor', 'administrative']
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
@@ -116,12 +120,15 @@ class _RegisterForm extends ConsumerWidget {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  onChanged: ref.read(registerFormProvider.notifier).onNameChanged,
+                  onChanged:
+                      ref.read(registerFormProvider.notifier).onNameChanged,
                   enableInteractiveSelection: false,
                   autofocus: true,
                   onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   decoration: InputDecoration(
-                    errorText: registerForm.isFormPosted ? registerForm.name.errorMessage : null,
+                    errorText: registerForm.isFormPosted
+                        ? registerForm.name.errorMessage
+                        : null,
                     filled: true,
                     fillColor: const Color.fromRGBO(52, 54, 70, 100),
                     border: OutlineInputBorder(
@@ -150,12 +157,17 @@ class _RegisterForm extends ConsumerWidget {
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
-                        onChanged: ref.read(registerFormProvider.notifier).onPaternalSurnameChanged,
+                        onChanged: ref
+                            .read(registerFormProvider.notifier)
+                            .onPaternalSurnameChanged,
                         enableInteractiveSelection: false,
                         autofocus: true,
-                        onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                        onTapOutside: (event) =>
+                            FocusScope.of(context).unfocus(),
                         decoration: InputDecoration(
-                          errorText: registerForm.isFormPosted ? registerForm.name.errorMessage : null,
+                          errorText: registerForm.isFormPosted
+                              ? registerForm.name.errorMessage
+                              : null,
                           filled: true,
                           fillColor: const Color.fromRGBO(52, 54, 70, 100),
                           border: OutlineInputBorder(
@@ -183,12 +195,17 @@ class _RegisterForm extends ConsumerWidget {
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
-                        onChanged: ref.read(registerFormProvider.notifier).onMaternalSurnameChanged,
+                        onChanged: ref
+                            .read(registerFormProvider.notifier)
+                            .onMaternalSurnameChanged,
                         enableInteractiveSelection: false,
                         autofocus: true,
-                        onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                        onTapOutside: (event) =>
+                            FocusScope.of(context).unfocus(),
                         decoration: InputDecoration(
-                          errorText: registerForm.isFormPosted ? registerForm.paternalSurname.errorMessage : null,
+                          errorText: registerForm.isFormPosted
+                              ? registerForm.paternalSurname.errorMessage
+                              : null,
                           filled: true,
                           fillColor: const Color.fromRGBO(52, 54, 70, 100),
                           border: OutlineInputBorder(
@@ -217,12 +234,15 @@ class _RegisterForm extends ConsumerWidget {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  onChanged: ref.read(registerFormProvider.notifier).onEmailChange,
+                  onChanged:
+                      ref.read(registerFormProvider.notifier).onEmailChange,
                   enableInteractiveSelection: false,
                   autofocus: true,
                   onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   decoration: InputDecoration(
-                    errorText: registerForm.isFormPosted ? registerForm.email.errorMessage : null,
+                    errorText: registerForm.isFormPosted
+                        ? registerForm.email.errorMessage
+                        : null,
                     filled: true,
                     fillColor: const Color.fromRGBO(52, 54, 70, 100),
                     border: OutlineInputBorder(
@@ -248,13 +268,16 @@ class _RegisterForm extends ConsumerWidget {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  onChanged: ref.read(registerFormProvider.notifier).onPasswordChanged,
+                  onChanged:
+                      ref.read(registerFormProvider.notifier).onPasswordChanged,
                   enableInteractiveSelection: false,
                   autofocus: true,
                   onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   obscureText: true,
                   decoration: InputDecoration(
-                    errorText: registerForm.isFormPosted ? registerForm.password.errorMessage : null,
+                    errorText: registerForm.isFormPosted
+                        ? registerForm.password.errorMessage
+                        : null,
                     filled: true,
                     fillColor: const Color.fromRGBO(52, 54, 70, 100),
                     border: OutlineInputBorder(
@@ -280,14 +303,19 @@ class _RegisterForm extends ConsumerWidget {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  onFieldSubmitted: (_) => ref.read(registerFormProvider.notifier).onFormSubmit(),
-                  onChanged: ref.read(registerFormProvider.notifier).onConfirmPasswordChanged,
+                  onFieldSubmitted: (_) =>
+                      ref.read(registerFormProvider.notifier).onFormSubmit(),
+                  onChanged: ref
+                      .read(registerFormProvider.notifier)
+                      .onConfirmPasswordChanged,
                   obscureText: true,
                   enableInteractiveSelection: false,
                   autofocus: true,
                   onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   decoration: InputDecoration(
-                    errorText: registerForm.isPasswordsMatch ? null : 'Las contraseñas no coinciden',
+                    errorText: registerForm.isPasswordsMatch
+                        ? null
+                        : 'Las contraseñas no coinciden',
                     filled: true,
                     fillColor: const Color.fromRGBO(52, 54, 70, 100),
                     border: OutlineInputBorder(
@@ -307,7 +335,8 @@ class _RegisterForm extends ConsumerWidget {
                       ref.read(registerFormProvider.notifier).onFormSubmit();
                     },
                     child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 80, vertical: 10),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 80, vertical: 10),
                       child: Text(
                         'Registrarse',
                         style: TextStyle(
