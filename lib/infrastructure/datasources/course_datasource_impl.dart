@@ -45,7 +45,8 @@ class CourseDatasourceImpl implements CourseDatasource {
   }
 
   @override
-  Future<Course> addCourse(int userId, CourseRequestDTO courseRequestDTO) async {
+  Future<Course> addCourse(
+      int userId, CourseRequestDTO courseRequestDTO) async {
     try {
       final response = await _dio.post(
         '/course/create/$userId',
@@ -120,10 +121,12 @@ class CourseDatasourceImpl implements CourseDatasource {
       throw Exception('Error en la petición: $e');
     }
   }
+
   @override
   Future<int> getEnrolledUsersCount(int courseId) async {
     try {
-      final response = await _dio.get('/enrollment/findEnrolledUsersByCourseId/$courseId');
+      final response =
+          await _dio.get('/enrollment/findEnrolledUsersByCourseId/$courseId');
       if (response.statusCode == 200) {
         final List<dynamic> enrolledUsers = response.data;
         return enrolledUsers.length;
@@ -136,26 +139,19 @@ class CourseDatasourceImpl implements CourseDatasource {
   }
 
   @override
-  Future<List<Course>> getRecommendedCourses() async {
+  Future<void> updateCourse(
+      int courseId, Map<String, dynamic> courseData) async {
     try {
-      // Get all courses first
-      final allCourses = await getCourses();
-      
-      // Get enrollment counts for each course
-      final coursesWithEnrollments = await Future.wait(
-        allCourses.map((course) async {
-          final enrollmentCount = await getEnrolledUsersCount(course.id);
-          return MapEntry(course, enrollmentCount);
-        }),
+      final response = await _dio.patch(
+        '/course/update/$courseId',
+        data: courseData,
       );
 
-      // Sort courses by enrollment count
-      coursesWithEnrollments.sort((a, b) => b.value.compareTo(a.value));
-
-      // Return sorted courses
-      return coursesWithEnrollments.map((entry) => entry.key).toList();
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        throw Exception('Error al actualizar el curso');
+      }
     } catch (e) {
-      throw Exception('Error al obtener cursos recomendados: $e');
+      throw Exception('Error en la petición: $e');
     }
   }
 }

@@ -18,7 +18,8 @@ class _CreateCourseScreenState extends ConsumerState<CreateCourseScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _benefitsController = TextEditingController();
-  final TextEditingController _targetAudienceController = TextEditingController();
+  final TextEditingController _targetAudienceController =
+      TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   String? _selectedLevel;
   String? _selectedCategory;
@@ -41,7 +42,8 @@ class _CreateCourseScreenState extends ConsumerState<CreateCourseScreen> {
         ScaffoldMessenger.of(context)
             .showSnackBar(
               SnackBar(
-                content: Text(next, style: const TextStyle(color: Colors.white)),
+                content:
+                    Text(next, style: const TextStyle(color: Colors.white)),
                 backgroundColor: Colors.blueAccent,
                 behavior: SnackBarBehavior.floating,
                 duration: const Duration(seconds: 1),
@@ -49,7 +51,8 @@ class _CreateCourseScreenState extends ConsumerState<CreateCourseScreen> {
             )
             .closed
             .then((_) => Navigator.pop(context));
-        ref.read(snackbarMessageProvider.notifier).state = null; // Limpiar mensaje
+        ref.read(snackbarMessageProvider.notifier).state =
+            null; // Limpiar mensaje
       }
     });
 
@@ -73,12 +76,16 @@ class _CreateCourseScreenState extends ConsumerState<CreateCourseScreen> {
               children: [
                 _buildTextField(_nameController, 'Título del curso'),
                 _buildTextField(_descriptionController, 'Descripción'),
-                _buildTextField(_benefitsController, 'Beneficios', required: false),
-                _buildTextField(_targetAudienceController, 'Audiencia objetivo', required: false),
+                _buildTextField(_benefitsController, 'Beneficios',
+                    required: false),
+                _buildTextField(_targetAudienceController, 'Audiencia objetivo',
+                    required: false),
                 const SizedBox(height: 15),
-                _buildDropdownField('Categoría', categories, _selectedCategory, (value) => setState(() => _selectedCategory = value)),
+                _buildDropdownField('Categoría', categories, _selectedCategory,
+                    (value) => setState(() => _selectedCategory = value)),
                 const SizedBox(height: 30),
-                _buildDropdownField('Nivel', levels, _selectedLevel, (value) => setState(() => _selectedLevel = value)),
+                _buildDropdownField('Nivel', levels, _selectedLevel,
+                    (value) => setState(() => _selectedLevel = value)),
                 const SizedBox(height: 15),
                 _buildTextField(_priceController, 'Precio', isNumeric: true),
                 const SizedBox(height: 30),
@@ -94,7 +101,8 @@ class _CreateCourseScreenState extends ConsumerState<CreateCourseScreen> {
     );
   }
 
-  Widget _buildDropdownField(String label, List<String> elements, String? selectedValue, void Function(String?) onChanged) {
+  Widget _buildDropdownField(String label, List<String> elements,
+      String? selectedValue, void Function(String?) onChanged) {
     return DropdownButtonFormField<String>(
       value: selectedValue,
       dropdownColor: Colors.black54,
@@ -127,7 +135,9 @@ class _CreateCourseScreenState extends ConsumerState<CreateCourseScreen> {
         keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
         style: const TextStyle(color: Colors.white),
         onTapOutside: (event) => FocusScope.of(context).unfocus(),
-        minLines: maxLines == null ? 1 : null, // Si no hay `maxLines`, usa una sola línea
+        minLines: maxLines == null
+            ? 1
+            : null, // Si no hay `maxLines`, usa una sola línea
         maxLines: maxLines, // Define el número máximo de líneas
         decoration: InputDecoration(
           labelText: label,
@@ -151,8 +161,11 @@ class _CreateCourseScreenState extends ConsumerState<CreateCourseScreen> {
     final newCourse = CourseRequestDTO(
       name: _nameController.text,
       description: _descriptionController.text,
-      benefits: _benefitsController.text.isNotEmpty ? _benefitsController.text : null,
-      targetAudience: _targetAudienceController.text.isNotEmpty ? _targetAudienceController.text : null,
+      benefits:
+          _benefitsController.text.isNotEmpty ? _benefitsController.text : null,
+      targetAudience: _targetAudienceController.text.isNotEmpty
+          ? _targetAudienceController.text
+          : null,
       category: _selectedCategory,
       level: _selectedLevel,
       price: double.tryParse(_priceController.text) ?? 0.0,
@@ -161,9 +174,11 @@ class _CreateCourseScreenState extends ConsumerState<CreateCourseScreen> {
     try {
       await ref.read(addCourseProvider.notifier).addCourse(id, newCourse);
       ref.invalidate(coursesProvider);
-      ref.read(snackbarMessageProvider.notifier).state = "Curso creado correctamente";
+      ref.read(snackbarMessageProvider.notifier).state =
+          "Curso creado correctamente";
     } catch (e) {
-      ref.read(snackbarMessageProvider.notifier).state = "Error al crear el curso";
+      ref.read(snackbarMessageProvider.notifier).state =
+          "Error al crear el curso";
     }
   }
 }
