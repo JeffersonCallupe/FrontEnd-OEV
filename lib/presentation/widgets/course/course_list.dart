@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/courses_providers/courses_provider.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/course_card.dart';
-import 'package:go_router/go_router.dart';
-import 'package:oev_mobile_app/presentation/widgets/course/recommended_courses_slider.dart';
 
 final searchQueryProvider = StateProvider<String>((ref) => "");
 final selectedCategoryProvider = StateProvider<String?>((ref) => null);
@@ -43,11 +41,6 @@ class CourseList extends ConsumerWidget {
               style: TextStyle(color: Colors.white70),
             ),
             const SizedBox(height: 20),
-            const SizedBox(
-              height: 180,
-              child: RecommendedCoursesSlider(),
-            ),
-            const SizedBox(height: 10),
             Row(
               children: [
                 Expanded(
