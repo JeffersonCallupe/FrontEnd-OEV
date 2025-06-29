@@ -211,3 +211,57 @@ class MyCourses extends ConsumerWidget {
     );
   }
 }
+
+// --- Tarjeta de cursos PUBLICADOS por el instructor ---
+class PublishedCourseCard extends StatelessWidget {
+  final Course publishedCourse;
+
+  const PublishedCourseCard({required this.publishedCourse, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.black54,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Imagen del curso
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                publishedCourse.imageUrl!,
+                width: double.infinity,
+                height: 130,
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Nombre del curso
+            Text(
+              publishedCourse.name,
+              style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+
+            // Instructor del curso
+            Text(
+              publishedCourse.instructorName,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
