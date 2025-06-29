@@ -265,3 +265,73 @@ class PublishedCourseCard extends StatelessWidget {
     );
   }
 }
+// --- Tarjeta de cursos ENROLADOS por el estudiante ---
+class EnrolledCourseCard extends ConsumerWidget {
+  final CourseEnrolled enrolledCourse;
+
+  const EnrolledCourseCard({required this.enrolledCourse, super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Stack(
+      children: [
+        InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CourseContent(courseEnrolled: enrolledCourse),
+              ),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.black54,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Imagen del curso
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    enrolledCourse.courseImageUrl,
+                    width: double.infinity,
+                    height: 150,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Nombre del curso
+                Text(
+                  enrolledCourse.courseName,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                // Nombre del instructor
+                Text(
+                  enrolledCourse.instructorName,
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                const SizedBox(height: 4),
+                // Progreso del curso
+                LinearProgressIndicator(
+                  value: enrolledCourse.progress / 100,
+                  backgroundColor: Colors.grey,
+                  color: Colors.blue,
+                  minHeight: 5,
+                ),
+                const SizedBox(height: 4),
+                // Texto del progreso
+                Text(
+                  'Progreso: ${enrolledCourse.progress}%',
+                  style: const TextStyle(fontSize: 12, color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ),
