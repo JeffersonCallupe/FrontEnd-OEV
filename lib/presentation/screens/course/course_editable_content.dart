@@ -8,6 +8,7 @@ import 'package:oev_mobile_app/infrastructure/helpers/video_uploader.dart';
 import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/courses_providers/courses_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/lesson_providers/lesson_provider.dart';
+import 'package:oev_mobile_app/presentation/screens/course/course_list_participants.dart';
 
 final snackbarMessageProvider =
     StateProvider<Map<String, dynamic>?>((ref) => null);
@@ -102,6 +103,27 @@ class CourseEditableContent extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            CourseListParticipantsPage(courseId: course.id),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.people),
+                  label: const Text("Ver inscritos"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16), // Espacio entre los botones
                 ElevatedButton.icon(
                   onPressed: () =>
                       _showAddResourceModal(context, ref, course.id),
