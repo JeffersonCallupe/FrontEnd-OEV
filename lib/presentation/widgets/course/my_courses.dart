@@ -6,10 +6,7 @@ import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/courses_providers/courses_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/enrollment_providers/enrollment_provider.dart';
 import 'package:oev_mobile_app/presentation/screens/course/course_content.dart';
-<<<<<<< HEAD:lib/presentation/screens/login/widgets/course/my_courses.dart
 import 'package:oev_mobile_app/presentation/screens/course/certificado.dart';
-=======
->>>>>>> 9eb70bc0191870f130eb4918574cb03bfbfcedeb:lib/presentation/widgets/course/my_courses.dart
 import 'package:oev_mobile_app/presentation/screens/course/course_editable_content.dart';
 
 final searchQueryProvider = StateProvider<String>((ref) => "");
@@ -101,7 +98,6 @@ class MyCourses extends ConsumerWidget {
             onChanged: (value) =>
                 ref.read(showCompletedProvider.notifier).state = value,
           ),
-<<<<<<< HEAD:lib/presentation/screens/login/widgets/course/my_courses.dart
           if (showCompleted)
             ElevatedButton(
               onPressed: () {
@@ -114,8 +110,6 @@ class MyCourses extends ConsumerWidget {
               },
               child: const Text('Ver lista de certificados'),
             ),
-=======
->>>>>>> 9eb70bc0191870f130eb4918574cb03bfbfcedeb:lib/presentation/widgets/course/my_courses.dart
         ],
         Expanded(
           child: isStudentOrAdmin
