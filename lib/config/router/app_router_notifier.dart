@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:oev_mobile_app/presentation/screens/login/providers/auth_provider.dart';
+import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
 
 final goRouterNotifierProvider = Provider((ref) {
   final authNotifier = ref.read(authProvider.notifier);

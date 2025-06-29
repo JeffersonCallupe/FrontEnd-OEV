@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:oev_mobile_app/presentation/screens/login/providers/auth_provider.dart';
-import 'package:oev_mobile_app/presentation/screens/login/providers/login_form_provider.dart';
+import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
+import 'package:oev_mobile_app/presentation/providers/login_form_provider.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatelessWidget {
   static const String name = 'login_screen';
@@ -50,16 +51,16 @@ class _LoginForm extends ConsumerWidget {
             const SizedBox(height: 30),
             Center(
               child: Image.asset(
-                'assets/images/logo_unmsm.png',
-                width: 92,
-                height: 92,
+                'assets/images/oev_logo.png',
+                width: 240,
+                height: 90,
               ),
             ),
             const SizedBox(height: 40),
             const Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Bienvenido',
+                'Bienvenido - OEV App',
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'Open Sans',
@@ -72,7 +73,7 @@ class _LoginForm extends ConsumerWidget {
             const Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                '¡Bienvenido de vuelta! Ingresa tus datos, por favor.',
+                '¡Bienvenido! Completa tus datos para iniciar sesión.',
                 style: TextStyle(
                   color: Color(0xFFB0B3C6),
                   fontFamily: 'PT Sans',
@@ -97,6 +98,7 @@ class _LoginForm extends ConsumerWidget {
                   onChanged: ref.read(loginFormProvider.notifier).onEmailChange,
                   enableInteractiveSelection: false,
                   autofocus: true,
+                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   decoration: InputDecoration(
                     errorText: loginForm.isFormPosted ? loginForm.email.errorMessage : null,
                     filled: true,
@@ -132,6 +134,7 @@ class _LoginForm extends ConsumerWidget {
                         obscureText: true,
                         enableInteractiveSelection: false,
                         autofocus: true,
+                        onTapOutside: (event) => FocusScope.of(context).unfocus(),
                         decoration: InputDecoration(
                           errorText: loginForm.isFormPosted ? loginForm.password.errorMessage : null,
                           filled: true,
@@ -243,7 +246,7 @@ class _LoginForm extends ConsumerWidget {
             const SizedBox(height: 20.0),
             InkWell(
               onTap: () {
-                // context.push('/register');
+                context.push('/register');
               },
               child: const Text(
                 '¿Aún no tienes una cuenta? Registrarte aquí.',

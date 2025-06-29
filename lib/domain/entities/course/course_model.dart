@@ -16,6 +16,7 @@ class Course {
   final DateTime? creationDate;
   final DateTime? lastUpdate;
   final int userId;
+  final String instructorName;
 
   Course({
     required this.id,
@@ -35,5 +36,6 @@ class Course {
     this.creationDate,
     this.lastUpdate,
     required this.userId,
+    required this.instructorName,
   });
 }
