@@ -3,6 +3,7 @@ import 'package:oev_mobile_app/domain/entities/dto/course_enrolled.dart';
 import 'package:oev_mobile_app/domain/entities/lesson/lesson_progress_model.dart';
 import 'package:oev_mobile_app/presentation/providers/courses_providers/courses_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:oev_mobile_app/presentation/screens/lesson/video_lesson_screen.dart';
 
 class CourseContent extends ConsumerWidget {
   final CourseEnrolled courseEnrolled;
@@ -137,6 +138,15 @@ class LessonCard extends StatelessWidget {
           '10:00',
           style: TextStyle(color: Colors.white70),
         ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  VideoLessonScreen(lessonVideoKey: lesson.lessonVideoKey!),
+            ),
+          );
+        },
       ),
     );
   }
