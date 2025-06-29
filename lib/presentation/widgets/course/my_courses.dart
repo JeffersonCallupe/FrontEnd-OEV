@@ -6,7 +6,6 @@ import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/courses_providers/courses_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/enrollment_providers/enrollment_provider.dart';
 import 'package:oev_mobile_app/presentation/screens/course/course_content.dart';
-import 'package:oev_mobile_app/presentation/screens/course/certificado.dart';
 import 'package:oev_mobile_app/presentation/screens/course/course_editable_content.dart';
 
 final searchQueryProvider = StateProvider<String>((ref) => "");
@@ -19,19 +18,22 @@ class MyCourses extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = Theme.of(context).colorScheme;
     final enrolledCoursesAsync = ref.watch(enrolledCoursesProvider);
-    final publishedCoursesAsync = ref.watch(coursesPublishedByInstructorProvider);
+    final publishedCoursesAsync =
+        ref.watch(coursesPublishedByInstructorProvider);
     final searchQuery = ref.watch(searchQueryProvider);
     final showCompleted = ref.watch(showCompletedProvider);
     final loggedUser = ref.read(authProvider).token;
 
-    final bool isStudentOrAdmin = loggedUser!.role == 'STUDENT' || loggedUser.role == 'ADMINISTRATIVE';
+    final bool isStudentOrAdmin =
+        loggedUser!.role == 'STUDENT' || loggedUser.role == 'ADMINISTRATIVE';
 
     return Column(
       children: [
         const SizedBox(height: 20),
         const Text(
           'Sección de cursos',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(
+              fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         const Text(
           'Continúa donde lo dejaste',
@@ -71,11 +73,16 @@ class MyCourses extends ConsumerWidget {
             children: [
               const Text(
                 'Cursos',
-                style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
               ),
               IconButton(
                 onPressed: () => {
-                  isStudentOrAdmin ? ref.refresh(enrolledCoursesProvider) : ref.refresh(coursesPublishedByInstructorProvider),
+                  isStudentOrAdmin
+                      ? ref.refresh(enrolledCoursesProvider)
+                      : ref.refresh(coursesPublishedByInstructorProvider),
                 },
                 icon: const Icon(Icons.refresh_rounded, color: Colors.white),
               ),
@@ -84,29 +91,25 @@ class MyCourses extends ConsumerWidget {
         ),
         if (isStudentOrAdmin) ...[
           SwitchListTile(
-            title: const Text('Mostrar solo cursos completados', style: TextStyle(color: Colors.white)),
+            title: const Text('Mostrar solo cursos completados',
+                style: TextStyle(color: Colors.white)),
             value: showCompleted,
-            onChanged: (value) => ref.read(showCompletedProvider.notifier).state = value,
+            onChanged: (value) =>
+                ref.read(showCompletedProvider.notifier).state = value,
           ),
-          if (showCompleted)
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CertificateScreen(),
-                  ),
-                );
-              },
-              child: const Text('Ver lista de certificados'),
-            ),
         ],
         Expanded(
           child: isStudentOrAdmin
               // --- Para ESTUDIANTE o ADMIN ---
               ? enrolledCoursesAsync.when(
                   data: (courses) {
-                    var filteredCourses = courses.where((course) => course.courseName.toLowerCase().contains(searchQuery.toLowerCase()) && (!showCompleted || course.progress == 100)).toList();
+                    var filteredCourses = courses
+                        .where((course) =>
+                            course.courseName
+                                .toLowerCase()
+                                .contains(searchQuery.toLowerCase()) &&
+                            (!showCompleted || course.progress == 100))
+                        .toList();
                     if (filteredCourses.isEmpty) {
                       return const Center(
                         child: Text(
@@ -116,7 +119,8 @@ class MyCourses extends ConsumerWidget {
                       );
                     }
                     return GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
@@ -126,18 +130,24 @@ class MyCourses extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         return GestureDetector(
                           // onTap: () => context.push('/course_content', extra: filteredCourses[index]),
-                          child: EnrolledCourseCard(enrolledCourse: filteredCourses[index]),
+                          child: EnrolledCourseCard(
+                              enrolledCourse: filteredCourses[index]),
                         );
                       },
                     );
                   },
-                  loading: () => const Center(child: CircularProgressIndicator()),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
                   error: (error, stack) => Center(child: Text('Error: $error')),
                 )
               // --- Para INSTRUCTOR ---
               : publishedCoursesAsync.when(
                   data: (courses) {
-                    final filteredCourses = courses.where((course) => course.name.toLowerCase().contains(searchQuery.toLowerCase())).toList();
+                    final filteredCourses = courses
+                        .where((course) => course.name
+                            .toLowerCase()
+                            .contains(searchQuery.toLowerCase()))
+                        .toList();
                     if (filteredCourses.isEmpty) {
                       return const Center(
                         child: Text(
@@ -152,7 +162,8 @@ class MyCourses extends ConsumerWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: GridView.builder(
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             crossAxisSpacing: 10,
                             mainAxisSpacing: 10,
@@ -165,18 +176,21 @@ class MyCourses extends ConsumerWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => CourseEditableContent(course: filteredCourses[index]),
+                                    builder: (context) => CourseEditableContent(
+                                        course: filteredCourses[index]),
                                   ),
                                 );
                               },
-                              child: PublishedCourseCard(publishedCourse: filteredCourses[index]),
+                              child: PublishedCourseCard(
+                                  publishedCourse: filteredCourses[index]),
                             );
                           },
                         ),
                       ),
                     );
                   },
-                  loading: () => const Center(child: CircularProgressIndicator()),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
                   error: (error, stack) => Center(child: Text('Error: $error')),
                 ),
         ),
@@ -216,7 +230,10 @@ class PublishedCourseCard extends StatelessWidget {
             // Nombre del curso
             Text(
               publishedCourse.name,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+              style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -251,7 +268,8 @@ class EnrolledCourseCard extends ConsumerWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CourseContent(courseEnrolled: enrolledCourse),
+                builder: (context) =>
+                    CourseContent(courseEnrolled: enrolledCourse),
               ),
             );
           },
@@ -278,7 +296,10 @@ class EnrolledCourseCard extends ConsumerWidget {
                 // Nombre del curso
                 Text(
                   enrolledCourse.courseName,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -318,19 +339,31 @@ class EnrolledCourseCard extends ConsumerWidget {
                 builder: (context) {
                   return AlertDialog(
                     backgroundColor: const Color(0xFF242636),
-                    title: const Text('Confirmar', style: TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    title: const Text('Confirmar',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold)),
                     content: const Text(
                       '¿Estás seguro de que deseas eliminar tu inscripción a este curso?',
-                      style: TextStyle(color: Colors.white, fontSize: 14.0, fontWeight: FontWeight.normal),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.normal),
                     ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(false),
-                        child: const Text('Cancelar', style: TextStyle(color: Colors.white, fontSize: 14.0, fontWeight: FontWeight.bold)),
+                        child: const Text('Cancelar',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold)),
                       ),
                       FilledButton(
                         style: ButtonStyle(
-                          backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                          backgroundColor:
+                              WidgetStateProperty.all<Color>(Colors.blue),
                         ),
                         onPressed: () {
                           Navigator.of(context).pop(true);
@@ -350,11 +383,13 @@ class EnrolledCourseCard extends ConsumerWidget {
               );
 
               if (confirm ?? false) {
-                await ref.read(enrollmentDeleteProvider(enrolledCourse.id).future);
+                await ref
+                    .read(enrollmentDeleteProvider(enrolledCourse.id).future);
                 // Invalida el provider que recarga la lista de cursos inscritos
                 ref.invalidate(enrolledCoursesProvider);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Inscripción eliminada correctamente')),
+                  const SnackBar(
+                      content: Text('Inscripción eliminada correctamente')),
                 );
               }
             },
