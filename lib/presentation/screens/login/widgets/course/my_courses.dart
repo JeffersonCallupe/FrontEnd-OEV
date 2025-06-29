@@ -66,7 +66,7 @@ class MyCourses extends ConsumerWidget {
           ),
         ),
 
-// Mostrar el switch solo si el usuario es estudiante o administrativo
+        // Mostrar el switch solo si el usuario es estudiante o administrativo
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
           child: Row(
@@ -265,6 +265,7 @@ class PublishedCourseCard extends StatelessWidget {
     );
   }
 }
+
 // --- Tarjeta de cursos ENROLADOS por el estudiante ---
 class EnrolledCourseCard extends ConsumerWidget {
   final CourseEnrolled enrolledCourse;
@@ -280,7 +281,8 @@ class EnrolledCourseCard extends ConsumerWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CourseContent(courseEnrolled: enrolledCourse),
+                builder: (context) =>
+                    CourseContent(courseEnrolled: enrolledCourse),
               ),
             );
           },
@@ -307,7 +309,10 @@ class EnrolledCourseCard extends ConsumerWidget {
                 // Nombre del curso
                 Text(
                   enrolledCourse.courseName,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -335,3 +340,75 @@ class EnrolledCourseCard extends ConsumerWidget {
             ),
           ),
         ),
+        // Botón de eliminación (X) en la esquina superior derecha
+        Positioned(
+          top: 0,
+          right: 0,
+          child: IconButton(
+            icon: const Icon(Icons.delete, color: Colors.white),
+            onPressed: () async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    backgroundColor: const Color(0xFF242636),
+                    title: const Text('Confirmar',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold)),
+                    content: const Text(
+                      '¿Estás seguro de que deseas eliminar tu inscripción a este curso?',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.normal),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text('Cancelar',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                      FilledButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              WidgetStateProperty.all<Color>(Colors.blue),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: const Text(
+                          'Aceptar',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+
+              if (confirm ?? false) {
+                await ref
+                    .read(enrollmentDeleteProvider(enrolledCourse.id).future);
+                // Invalida el provider que recarga la lista de cursos inscritos
+                ref.invalidate(enrolledCoursesProvider);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text('Inscripción eliminada correctamente')),
+                );
+              }
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
