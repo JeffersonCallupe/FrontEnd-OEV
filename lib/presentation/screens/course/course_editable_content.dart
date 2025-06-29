@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:oev_mobile_app/domain/entities/course/course_model.dart';
 import 'package:oev_mobile_app/domain/entities/lesson/lesson_model.dart';
+import 'package:oev_mobile_app/infrastructure/helpers/video_uploader.dart';
 import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/courses_providers/courses_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/lesson_providers/lesson_provider.dart';
@@ -100,7 +102,6 @@ class CourseEditableContent extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(width: 16), // Espacio entre los botones
                 ElevatedButton.icon(
                   onPressed: () =>
                       _showAddResourceModal(context, ref, course.id),
@@ -197,6 +198,41 @@ void _showAddResourceModal(BuildContext context, WidgetRef ref, int courseId) {
                   ),
                 ),
                 const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        final picker = ImagePicker();
+                        final pickedFile =
+                            await picker.pickVideo(source: ImageSource.gallery);
+
+                        if (pickedFile != null) {
+                          setState(() {
+                            // Update the state when a video is selected
+                            selectedVideo = File(pickedFile.path);
+                          });
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            selectedVideo != null ? Colors.blue : Colors.grey,
+                      ),
+                      child: Text(
+                        selectedVideo != null
+                            ? 'Video Seleccionado'
+                            : 'Seleccionar Video', // Conditional text
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    Visibility(
+                        visible: selectedVideo != null,
+                        child: const Icon(
+                          Icons.done_all_rounded,
+                          color: Colors.blue,
+                        )),
+                  ],
+                ),
               ],
             ),
             actions: [
@@ -206,6 +242,23 @@ void _showAddResourceModal(BuildContext context, WidgetRef ref, int courseId) {
                   foregroundColor: Colors.grey,
                 ),
                 child: const Text('Cancelar'),
+              ),
+              FilledButton(
+                onPressed: () async {
+                  if (titleController.text.isNotEmpty &&
+                      selectedVideo != null) {
+                    final VideoUploader uploader = VideoUploader();
+                    await uploader.uploadLessonVideo(
+                        courseId, titleController.text, selectedVideo);
+                    ref.invalidate(lessonProvider(courseId));
+                    Navigator.of(context).pop();
+                  }
+                },
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blueAccent,
+                ),
+                child: const Text('Guardar'),
               ),
             ],
           );
