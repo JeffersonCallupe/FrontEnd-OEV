@@ -10,6 +10,9 @@ import 'package:oev_mobile_app/presentation/widgets/conference/user_conferences_
 // Provider para almacenar el término de búsqueda
 final searchQueryProvider = StateProvider<String>((ref) => "");
 
+// Provider para almacenar la categoría seleccionada
+final selectedCategoryProvider = StateProvider<String?>((ref) => null);
+
 class ConferenceList extends ConsumerWidget {
   const ConferenceList({super.key});
 
@@ -18,6 +21,7 @@ class ConferenceList extends ConsumerWidget {
     final colors = Theme.of(context).colorScheme;
     final asyncConferences = ref.watch(conferenceProvider);
     final searchQuery = ref.watch(searchQueryProvider);
+    final selectedCategory = ref.watch(selectedCategoryProvider);
     final loggedUser = ref.read(authProvider).token;
     final userRole = loggedUser!.role;
     final isAdmin = userRole == 'ADMIN';
@@ -42,32 +46,48 @@ class ConferenceList extends ConsumerWidget {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
-              child: SizedBox(
-                width: 420,
-                child: TextField(
-                  cursorColor: colors.primary,
-                  onChanged: (value) {
-                    ref
-                        .read(searchQueryProvider.notifier)
-                        .update((state) => value);
-                  },
-                  style: const TextStyle(color: Colors.white),
-                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
-                  decoration: const InputDecoration(
-                    hintText: 'Buscar por conferencia',
-                    hintStyle: TextStyle(color: Colors.grey),
-                    prefixIcon: Icon(Icons.search),
-                    filled: true,
-                    fillColor: Color(0xff343646),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      width: 420,
+                      child: TextField(
+                        cursorColor: colors.primary,
+                        onChanged: (value) {
+                          ref
+                              .read(searchQueryProvider.notifier)
+                              .update((state) => value);
+                        },
+                        style: const TextStyle(color: Colors.white),
+                        onTapOutside: (event) =>
+                            FocusScope.of(context).unfocus(),
+                        decoration: const InputDecoration(
+                          hintText: 'Buscar por conferencia',
+                          hintStyle: TextStyle(color: Colors.grey),
+                          prefixIcon: Icon(Icons.search),
+                          filled: true,
+                          fillColor: Color(0xff343646),
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20.0)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20.0)),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.filter_list, color: Colors.white),
+                    onPressed: () {
+                      _showCategoryFilterDialog(context, ref);
+                    },
+                  ),
+                ],
               ),
             ),
             Padding(
@@ -148,11 +168,16 @@ class ConferenceList extends ConsumerWidget {
             Expanded(
               child: asyncConferences.when(
                 data: (conferences) {
+                  // Filtrar conferencias por búsqueda y categoría
                   final filteredConferences = conferences
-                      .where((conference) => conference.name
-                          .toLowerCase()
-                          .contains(searchQuery.toLowerCase()))
+                      .where((conference) =>
+                          conference.name
+                              .toLowerCase()
+                              .contains(searchQuery.toLowerCase()) &&
+                          (selectedCategory == null ||
+                              conference.category == selectedCategory))
                       .toList();
+
                   if (filteredConferences.isEmpty) {
                     return const Center(
                       child: Text(
@@ -209,6 +234,62 @@ class ConferenceList extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+
+  void _showCategoryFilterDialog(BuildContext context, WidgetRef ref) {
+    // Lista de categorías predefinidas
+    final List<String> categories = [
+      'Innovación y Tecnología',
+      'Investigación y Desarrollo Académico',
+      'Empleabilidad y Desarrollo Profesional',
+      'Ciencia',
+    ];
+
+    // Categoría seleccionada actualmente
+    final selectedCategory = ref.read(selectedCategoryProvider);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF242636),
+          title: const Text('Filtrar por categoría',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold)),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                ...categories.map((category) {
+                  return ListTile(
+                    title: Text(category,
+                        style: const TextStyle(color: Colors.white)),
+                    trailing: selectedCategory == category
+                        ? const Icon(Icons.check, color: Colors.white)
+                        : null,
+                    onTap: () {
+                      ref.read(selectedCategoryProvider.notifier).state =
+                          category;
+                      Navigator.pop(context);
+                    },
+                  );
+                }).toList(),
+                if (selectedCategory != null)
+                  TextButton(
+                    onPressed: () {
+                      ref.read(selectedCategoryProvider.notifier).state = null;
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Limpiar filtro',
+                        style: TextStyle(color: Colors.blue)),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
