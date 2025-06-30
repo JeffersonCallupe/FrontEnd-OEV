@@ -7,7 +7,9 @@ import 'package:oev_mobile_app/infrastructure/datasources/conference_datasources
 class ConferenceRepositoryImpl implements ConferenceRepository {
   final ConferenceDatasource conferenceDatasource;
 
-  ConferenceRepositoryImpl({ConferenceDatasource? conferenceDatasource}) : conferenceDatasource = conferenceDatasource ?? ConferenceDatasourceImpl();
+  ConferenceRepositoryImpl({ConferenceDatasource? conferenceDatasource})
+      : conferenceDatasource =
+            conferenceDatasource ?? ConferenceDatasourceImpl();
 
   @override
   Future<List<Conference>> getConference() {
@@ -25,7 +27,14 @@ class ConferenceRepositoryImpl implements ConferenceRepository {
   }
 
   @override
-  Future<Conference> addConference(int userId, ConferenceRequestDTO conferenceRequestDTO) {
+  Future<Conference> addConference(
+      int userId, ConferenceRequestDTO conferenceRequestDTO) {
     return conferenceDatasource.addConference(userId, conferenceRequestDTO);
+  }
+
+  @override
+  Future<void> updateConference(
+      int conferenceId, Map<String, dynamic> conferenceData) async {
+    return conferenceDatasource.updateConference(conferenceId, conferenceData);
   }
 }

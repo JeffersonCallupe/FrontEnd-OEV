@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oev_mobile_app/domain/entities/course/course_model.dart';
+import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
+import 'package:oev_mobile_app/presentation/screens/course/course_editable_content.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/course_detail.dart';
 
-class CourseCard extends StatelessWidget {
+class CourseCard extends ConsumerWidget {
   final Course course;
   const CourseCard({required this.course, super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final loggedUser = ref.read(authProvider).token;
+
+    final isAdmin = loggedUser?.role == 'ADMIN';
+
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CourseDetailPage(courseId: course.id),
+            builder: (context) => isAdmin ? CourseEditableContent(course: course) : CourseDetailPage(courseId: course.id),
           ),
         );
       },

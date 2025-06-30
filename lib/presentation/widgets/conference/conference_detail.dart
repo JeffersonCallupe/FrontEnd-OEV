@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oev_mobile_app/domain/entities/conference/conference_model.dart';
+import 'package:oev_mobile_app/presentation/providers/conferences_providers/conference_repository_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/conferences_providers/conferences_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/registration_providers/registration_provider.dart';
+import 'package:oev_mobile_app/presentation/screens/conference/conference_list_participants.dart';
+
+final snackbarMessageProvider =
+    StateProvider<Map<String, dynamic>?>((ref) => null);
 
 class ConferenceDetailPage extends ConsumerWidget {
   final int conferenceId;
@@ -13,6 +18,32 @@ class ConferenceDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final conferenceAsync = ref.watch(conferenceByIdProvider(conferenceId));
+    final loggedUser = ref.read(authProvider).token;
+    final isAdmin =
+        loggedUser?.role == 'ADMIN'; // Verificar si el usuario es ADMIN
+
+    ref.listen<Map<String, dynamic>?>(snackbarMessageProvider,
+        (previous, next) {
+      if (next != null) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
+              SnackBar(
+                content: Text(next['message'],
+                    style: const TextStyle(color: Colors.white)),
+                backgroundColor: Colors.blueAccent,
+                behavior: SnackBarBehavior.floating,
+                duration: const Duration(seconds: 1),
+              ),
+            )
+            .closed
+            .then((_) {
+          if (next['shouldPop'] == true) {
+            Navigator.pop(context);
+          }
+        });
+        ref.read(snackbarMessageProvider.notifier).state = null;
+      }
+    });
 
     return Scaffold(
       backgroundColor: const Color(0xFF1E1E2C),
@@ -22,6 +53,19 @@ class ConferenceDetailPage extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          // Ícono de edición solo para ADMIN
+          if (isAdmin)
+            IconButton(
+              icon: const Icon(Icons.edit, color: Colors.white),
+              onPressed: () {
+                if (conferenceAsync.value != null) {
+                  _showEditConferenceDialog(
+                      context, ref, conferenceAsync.value!);
+                }
+              },
+            ),
+        ],
       ),
       body: conferenceAsync.when(
         data: (conference) => _buildCourseDetail(context, ref, conference),
@@ -36,7 +80,9 @@ class ConferenceDetailPage extends ConsumerWidget {
   Widget _buildCourseDetail(
       BuildContext context, WidgetRef ref, Conference conference) {
     final loggedUser = ref.read(authProvider).token;
-    final isVisible = loggedUser?.role == 'STUDENT' || loggedUser?.role == 'ADMINISTRATIVE' || loggedUser?.role == 'INSTRUCTOR';
+    final isVisible = loggedUser?.role == 'STUDENT' ||
+        loggedUser?.role == 'ADMINISTRATIVE' ||
+        loggedUser?.role == 'INSTRUCTOR';
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -53,8 +99,6 @@ class ConferenceDetailPage extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-
-          // Nombre del curso
           Text(
             conference.name,
             style: const TextStyle(
@@ -64,8 +108,6 @@ class ConferenceDetailPage extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 8),
-
-          // Fila con cantidad de alumnos, costo y favoritos
           Row(
             children: [
               Expanded(
@@ -107,42 +149,60 @@ class ConferenceDetailPage extends ConsumerWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 8),
-
-          // Nombre del creador
-          Text(
-            "Organizador: ${conference.creatorName}",
-            style: const TextStyle(fontSize: 16, color: Colors.white70),
-          ),
+          Text("Organizador: ${conference.creatorName}",
+              style: const TextStyle(fontSize: 16, color: Colors.white70)),
           const SizedBox(height: 16),
-
-          // Última actualización
           Text(
-            "Fecha de la conferencia: ${conference.date.toLocal().toString().split(' ')[0]}",
-            // "Fecha de la conferencia: 22 de octubre de 2021",
-            style: const TextStyle(fontSize: 16, color: Colors.white70),
-          ),
-
+              "Fecha de la conferencia: ${conference.date.toLocal().toString().split(' ')[0]}",
+              style: const TextStyle(fontSize: 16, color: Colors.white70)),
           const SizedBox(height: 20),
-
-          // Botón de Inscribirse
           Visibility(
             visible: isVisible,
             child: Center(
               child: ElevatedButton(
-                onPressed: () =>
-                    _showRegistrationConfirmation(context, ref, conference.id),
+                onPressed: () => _enrollUser(ref, context, conference.id),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
                 child: const Text(
                   'Inscribirse',
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Botón de Ver Registrados
+          Visibility(
+            visible: !isVisible,
+            child: Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ConferenceListParticipantsPage(
+                          conferenceId: conference.id),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'Ver registrados',
                   style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),
@@ -158,23 +218,87 @@ class ConferenceDetailPage extends ConsumerWidget {
     );
   }
 
-  void _showRegistrationConfirmation(
-      BuildContext context, WidgetRef ref, int conferenceId) {
+  Future<void> _enrollUser(
+      WidgetRef ref, BuildContext context, int conferenceId) async {
+    final userId = ref.read(authProvider).token?.id;
+    if (userId == null) {
+      ref.read(snackbarMessageProvider.notifier).state = {
+        'message': 'Error: Usuario no autenticado'
+      };
+      return;
+    }
+
+    final registrationData = {'userId': userId, 'conferenceId': conferenceId};
+    try {
+      await ref.read(createRegistrationProvider(registrationData).future);
+      ref.read(snackbarMessageProvider.notifier).state = {
+        'message': 'Inscripción exitosa!',
+        'shouldPop': true
+      };
+    } catch (error) {
+      ref.read(snackbarMessageProvider.notifier).state = {
+        'message': 'Error: $error'
+      };
+    }
+  }
+
+  void _showEditConferenceDialog(
+      BuildContext context, WidgetRef ref, Conference conference) {
+    final nameController = TextEditingController(text: conference.name);
+    final descriptionController =
+        TextEditingController(text: conference.description);
+    final categoryController = TextEditingController(text: conference.category);
+    final dateController = TextEditingController(
+        text: conference.date.toIso8601String().split('T')[0]);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: const Color(0xFF242636),
-          title: const Text('Confirmación',
+          title: const Text('Editar Conferencia',
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold)),
-          content: const Text('¿Seguro que quieres registrarte en la conferencia?',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.normal)),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nombre de la conferencia',
+                    labelStyle: TextStyle(color: Colors.white70),
+                  ),
+                  style: const TextStyle(color: Colors.white),
+                ),
+                TextField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Descripción',
+                    labelStyle: TextStyle(color: Colors.white70),
+                  ),
+                  style: const TextStyle(color: Colors.white),
+                ),
+                TextField(
+                  controller: categoryController,
+                  decoration: const InputDecoration(
+                    labelText: 'Categoría',
+                    labelStyle: TextStyle(color: Colors.white70),
+                  ),
+                  style: const TextStyle(color: Colors.white),
+                ),
+                TextField(
+                  controller: dateController,
+                  decoration: const InputDecoration(
+                    labelText: 'Fecha (YYYY-MM-DD)',
+                    labelStyle: TextStyle(color: Colors.white70),
+                  ),
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -191,10 +315,16 @@ class ConferenceDetailPage extends ConsumerWidget {
                 backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
               ),
               onPressed: () {
+                _updateConference(
+                    ref,
+                    conference.id,
+                    nameController.text,
+                    descriptionController.text,
+                    categoryController.text,
+                    dateController.text);
                 Navigator.of(context).pop(); // Cierra el diálogo
-                _enrollUser(ref, context, conferenceId);
               },
-              child: const Text('Aceptar',
+              child: const Text('Actualizar',
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 14.0,
@@ -206,59 +336,57 @@ class ConferenceDetailPage extends ConsumerWidget {
     );
   }
 
-  void _enrollUser(WidgetRef ref, BuildContext context, int conferenceId) {
-    final userId = ref.read(authProvider).token?.id;
-    if (userId == null) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error: Usuario no autenticado')),
-        );
-      }
-      return;
-    }
+  void _updateConference(WidgetRef ref, int conferenceId, String name,
+      String description, String category, String date) {
+    final conferenceData = {
+      "name": name,
+      "description": description,
+      "category": category,
+      "date": date,
+    };
 
-    final registrationData = {'userId': userId, 'conferenceId': conferenceId};
-    ref.read(createRegistrationProvider(registrationData).future).then((_) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Inscripción exitosa!')),
-        );
-      }
+    ref
+        .read(conferenceRepositoryProvider)
+        .updateConference(conferenceId, conferenceData)
+        .then((_) {
+      ScaffoldMessenger.of(ref.context).showSnackBar(
+        const SnackBar(content: Text('Conferencia actualizada exitosamente!')),
+      );
+      ref.refresh(conferenceByIdProvider(
+          conferenceId)); // Refrescar la información de la conferencia
     }).catchError((error) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $error')),
-        );
-      }
+      ScaffoldMessenger.of(ref.context).showSnackBar(
+        SnackBar(content: Text('Error al actualizar la conferencia: $error')),
+      );
     });
   }
+}
 
-  Widget _buildSection(String title, String? content) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF242636),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+Widget _buildSection(String title, String? content) {
+  return Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: const Color(0xFF242636),
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
-          const SizedBox(height: 8),
-          Text(
-            content ?? "No disponible.",
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        const SizedBox(height: 8),
+        Text(
+          content ?? "No disponible.",
+          style: const TextStyle(fontSize: 14, color: Colors.grey),
+        ),
+      ],
+    ),
+  );
 }

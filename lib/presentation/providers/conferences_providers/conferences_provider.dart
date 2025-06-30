@@ -16,12 +16,14 @@ final conferenceByIdProvider = FutureProvider.family
   return repository.getConferenceById(conferenceId);
 });
 
-final deleteConferenceProvider = FutureProvider.family.autoDispose<void, int>((ref, conferenceId) async {
+final deleteConferenceProvider =
+    FutureProvider.family.autoDispose<void, int>((ref, conferenceId) async {
   final repository = ref.watch(conferenceRepositoryProvider);
   return repository.deleteConferenceById(conferenceId);
 });
 
-final addConferenceProvider = StateNotifierProvider<AddConferenceNotifier, AsyncValue<Conference>>((ref) {
+final addConferenceProvider =
+    StateNotifierProvider<AddConferenceNotifier, AsyncValue<Conference>>((ref) {
   final repository = ref.watch(conferenceRepositoryProvider);
   return AddConferenceNotifier(repository);
 });
@@ -44,10 +46,12 @@ class AddConferenceNotifier extends StateNotifier<AsyncValue<Conference>> {
             userId: 0,
             creatorName: '')));
 
-  Future<Conference> addConference(int userId, ConferenceRequestDTO conferenceRequestDTO) async {
+  Future<Conference> addConference(
+      int userId, ConferenceRequestDTO conferenceRequestDTO) async {
     state = const AsyncLoading();
     try {
-      final conference = await repository.addConference(userId, conferenceRequestDTO);
+      final conference =
+          await repository.addConference(userId, conferenceRequestDTO);
       state = AsyncData(conference);
       return conference;
     } catch (e) {
