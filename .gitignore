@@ -38,9 +38,42 @@ app.*.symbols
 app.*.map.json
 
 # Android Studio will place build artifacts here
-android/app/.cox/
-android/app/.gradle/
-android/app/build/
-android/app/debug/
-android/app/profile/
-android/app/release/
+/android/app/debug
+/android/app/profile
+/android/app/release
+# Android related
+*.apk
+*.ap_
+*.dex
+*.class
+*.keystore
+*.jks
+*.gradle
+/local.properties
+/captures/
+/output.json
+
+# Flutter generated files
+.flutter-*
+.packages
+generated_plugin_registrant.dart
+
+# iOS related (if present in your project)
+*.xcworkspace
+*.xcuserstate
+*.xcuserdata
+*.lock
+Pods/
+DerivedData/
+Flutter/Flutter.framework
+Flutter/Flutter.podspec
+
+# VS Code settings (uncomment if you want to ignore)
+/.vscode/
+
+# Crashlytics
+crashlytics-build.properties
+
+# Firebase
+google-services.json
+GoogleService-Info.plist

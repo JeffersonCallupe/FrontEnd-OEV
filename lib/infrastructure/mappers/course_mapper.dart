@@ -9,7 +9,7 @@ class CourseMapper {
       benefits: json['benefits'] ?? '',
       targetAudience: json['targetAudience'] ?? '',
       imageUrl: json['imageUrl'] ?? '',
-      category: json['category'] ?? '',
+      category: json['category'] ?? 'No category',
       level: json['level'] ?? '',
       price: json['price']?.toDouble() ?? 0.0,
       duration: json['duration'] ?? 0,
@@ -20,6 +20,7 @@ class CourseMapper {
       creationDate: json['creationDate'] != null ? DateTime.parse(json['creationDate']) : DateTime.now(),
       lastUpdate: json['lastUpdate'] != null ? DateTime.parse(json['lastUpdate']) : DateTime.now(),
       userId: json['userId'],
+      instructorName: json['instructorName'] ?? 'Instructor Name',
     );
   }
 }

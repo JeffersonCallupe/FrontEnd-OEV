@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:oev_mobile_app/config/constants/environment.dart';
 import 'package:oev_mobile_app/domain/datasources/auth_datasource.dart';
+import 'package:oev_mobile_app/domain/entities/dto/request/user_register_dto.dart';
 import 'package:oev_mobile_app/domain/entities/token/token_model.dart';
 import 'package:oev_mobile_app/domain/entities/user/user_model.dart';
 import 'package:oev_mobile_app/domain/errors/auth_errors.dart';
@@ -14,8 +15,17 @@ class AuthDataSourceImpl implements AuthDataSource {
     ),
   );
   @override
-  Future<Token> checkAuthStatus(String token) async {
-    return Token(token: token);
+  Future<Token> checkAuthStatus(Token token) async {
+    return Token(
+      id: token.id,
+      name: token.name,
+      paternalSurname: token.paternalSurname,
+      maternalSurname: token.maternalSurname,
+      email: token.email,
+      phone: token.phone,
+      role: token.role,
+      token: token.token,
+    );
   }
 
   @override
@@ -45,21 +55,15 @@ class AuthDataSourceImpl implements AuthDataSource {
   }
 
   @override
-  Future<User> register(String email, String password, String name, String rol, String lastName) async {
+  Future<User> register(UserRegisterDto userRegisterDto) async {
     try {
       final response = await dio.post(
         '/auth/register',
-        data: {
-          "name": name,
-          "lastName": lastName,
-          "type": rol,
-          "email": email,
-          "password": password,
-        },
+        data: UserRegisterDto.entityToJson(userRegisterDto),
       );
       print("userinfo: ${response.data}");
       final user = UserMapper.userJsonToEntity(response.data);
-      print(user);
+      print("user: $user");
       return user;
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
