@@ -247,9 +247,19 @@ class ConferenceDetailPage extends ConsumerWidget {
     final nameController = TextEditingController(text: conference.name);
     final descriptionController =
         TextEditingController(text: conference.description);
-    final categoryController = TextEditingController(text: conference.category);
     final dateController = TextEditingController(
         text: conference.date.toIso8601String().split('T')[0]);
+
+    // Lista de categorías predefinidas
+    final List<String> categories = [
+      'Innovación y Tecnología',
+      'Investigación y Desarrollo Académico',
+      'Empleabilidad y Desarrollo Profesional',
+      'Ciencia',
+    ];
+
+    // Variable para almacenar la categoría seleccionada
+    String? selectedCategory = conference.category;
 
     showDialog(
       context: context,
@@ -280,13 +290,26 @@ class ConferenceDetailPage extends ConsumerWidget {
                   ),
                   style: const TextStyle(color: Colors.white),
                 ),
-                TextField(
-                  controller: categoryController,
+                DropdownButtonFormField<String>(
+                  value: selectedCategory,
                   decoration: const InputDecoration(
                     labelText: 'Categoría',
                     labelStyle: TextStyle(color: Colors.white70),
                   ),
+                  dropdownColor: const Color(0xFF242636),
                   style: const TextStyle(color: Colors.white),
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      selectedCategory = newValue;
+                    }
+                  },
+                  items:
+                      categories.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
                 ),
                 TextField(
                   controller: dateController,
@@ -316,12 +339,13 @@ class ConferenceDetailPage extends ConsumerWidget {
               ),
               onPressed: () {
                 _updateConference(
-                    ref,
-                    conference.id,
-                    nameController.text,
-                    descriptionController.text,
-                    categoryController.text,
-                    dateController.text);
+                  ref,
+                  conference.id,
+                  nameController.text,
+                  descriptionController.text,
+                  selectedCategory!, // Usar la categoría seleccionada
+                  dateController.text,
+                );
                 Navigator.of(context).pop(); // Cierra el diálogo
               },
               child: const Text('Actualizar',
