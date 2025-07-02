@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/courses_providers/courses_provider.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/course_card.dart';
+import 'package:go_router/go_router.dart';
 
 final searchQueryProvider = StateProvider<String>((ref) => "");
 final selectedCategoryProvider = StateProvider<String?>((ref) => null);
@@ -31,25 +32,27 @@ class CourseList extends ConsumerWidget {
           children: [
             Text(
               'Bienvenido, ${loggedUser?.name ?? 'User'}',
-              style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
             ),
             const Text(
               'Tenemos sugerencias para ti basadas en tus intereses',
               style: TextStyle(color: Colors.white70),
             ),
             const SizedBox(height: 20),
+            const SizedBox(
+              height: 180,
+              child: Placeholder( // Placeholder for the recommended courses slider
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 10),
             Row(
               children: [
                 Expanded(
                   child: TextField(
                     cursorColor: colors.primary,
                     onChanged: (value) {
-                      ref
-                          .read(searchQueryProvider.notifier)
-                          .update((state) => value);
+                      ref.read(searchQueryProvider.notifier).update((state) => value);
                     },
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
@@ -81,30 +84,17 @@ class CourseList extends ConsumerWidget {
                           ),
                           title: const Text(
                             'Seleccionar categoría',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              ...[
-                                'Tecnología y Programación',
-                                'Negocios y Emprendimiento',
-                                'Diseño',
-                                'Ciencias y Matemáticas',
-                                'Idiomas',
-                                'Desarrollo Personal'
-                              ].map((category) {
+                              ...['Tecnología y Programación', 'Negocios y Emprendimiento', 'Diseño', 'Ciencias y Matemáticas', 'Idiomas', 'Desarrollo Personal'].map((category) {
                                 return ListTile(
-                                  title: Text(category,
-                                      style:
-                                          const TextStyle(color: Colors.white)),
+                                  title: Text(category, style: const TextStyle(color: Colors.white)),
                                   onTap: () {
-                                    ref
-                                        .read(selectedCategoryProvider.notifier)
-                                        .state = category;
+                                    ref.read(selectedCategoryProvider.notifier).state = category;
                                     Navigator.pop(context);
                                   },
                                 );
@@ -119,11 +109,29 @@ class CourseList extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Visibility(
+                    visible: loggedUser!.role == 'INSTRUCTOR',
+                    child: Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.push('/course/create');
+                        },
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [Text('Crear Curso'), Icon(Icons.add)],
+                        ),
+                      ),
+                    )),
+              ],
+            ),
+            const SizedBox(height: 5),
             if (selectedCategory != null)
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 12),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
                 decoration: BoxDecoration(
                   color: colors.primary,
                   borderRadius: BorderRadius.circular(20),
@@ -138,11 +146,9 @@ class CourseList extends ConsumerWidget {
                     const SizedBox(width: 8),
                     GestureDetector(
                       onTap: () {
-                        ref.read(selectedCategoryProvider.notifier).state =
-                            null;
+                        ref.read(selectedCategoryProvider.notifier).state = null;
                       },
-                      child: const Icon(Icons.close,
-                          color: Colors.white, size: 16),
+                      child: const Icon(Icons.close, color: Colors.white, size: 16),
                     ),
                   ],
                 ),
@@ -151,11 +157,8 @@ class CourseList extends ConsumerWidget {
             asyncCourses.when(
               data: (courses) {
                 final filteredCourses = courses.where((course) {
-                  final matchesSearch = course.name
-                      .toLowerCase()
-                      .contains(searchQuery.toLowerCase());
-                  final matchesCategory = selectedCategory == null ||
-                      course.category == selectedCategory;
+                  final matchesSearch = course.name.toLowerCase().contains(searchQuery.toLowerCase());
+                  final matchesCategory = selectedCategory == null || course.category == selectedCategory;
                   return matchesSearch && matchesCategory;
                 }).toList();
 
