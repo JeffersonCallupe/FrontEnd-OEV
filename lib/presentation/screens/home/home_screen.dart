@@ -85,7 +85,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             canvasColor: const Color(0xff2a2c3e),
           ),
           child: BottomNavigationBar(
-            items: List.generate(4, (index) {
+            items: List.generate(3, (index) {
               bool isSelected = _selectedIndex == index;
               return BottomNavigationBarItem(
                 icon: Container(
@@ -101,9 +101,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                           ? Icons.home
                           : index == 1
                               ? Icons.menu_book
-                              : index == 2
-                                  ? Icons.video_call
-                                  : Icons.smart_toy_rounded,
+                              : Icons.smart_toy_rounded,
                       color: isSelected ? selectedColor : unselectedColor,
                     ),
                   ),
@@ -137,10 +135,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           child: MyCourses(),
         );
       case 2:
-        return const Center(
-          child: Text('Vista conf', style: TextStyle(color: Colors.white)),
-        );
-      case 3:
         return const Center(
           child: Text('Vista Chatbot', style: TextStyle(color: Colors.white)),
         );
