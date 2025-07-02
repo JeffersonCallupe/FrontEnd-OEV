@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:oev_mobile_app/domain/entities/dto/course_enrolled.dart';
 import 'package:oev_mobile_app/domain/entities/lesson/lesson_progress_model.dart';
 import 'package:oev_mobile_app/presentation/providers/courses_providers/courses_provider.dart';
+import 'package:oev_mobile_app/presentation/screens/course/certificado_pago.dart'; // Importa la pantalla de pago
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oev_mobile_app/presentation/screens/lesson/video_lesson_screen.dart';
 
@@ -84,6 +85,42 @@ class CourseContent extends ConsumerWidget {
                     Colors.grey[700], // Fondo gris oscuro para barra
                 color: Colors.blueAccent, // Color del progreso
                 minHeight: 8,
+              ),
+              Visibility(
+                visible: courseEnrolled.progress == 0,
+                child: Row(
+                  mainAxisAlignment:
+                      MainAxisAlignment.start, // Alinea el botón a la derecha
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 14.0,
+                          left:
+                              15.0), // Añade padding solo en la parte superior y derecha
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CertificadoPagoScreen(
+                                  courseEnrolled: courseEnrolled),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.payment, color: Colors.white),
+                        label: const Text('Pagar Certificado'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blueGrey, // Color del botón
+                          foregroundColor: Colors.white, // Texto blanco
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 13, vertical: 6),
+                          textStyle: const TextStyle(
+                              fontSize: 11, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 10.0,
