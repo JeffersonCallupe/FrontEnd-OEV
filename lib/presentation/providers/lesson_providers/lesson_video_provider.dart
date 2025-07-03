@@ -21,12 +21,8 @@ final _dio = Dio(
 final _bucketName = Environment.bucketName;
 
 // Provider para obtener la URL firmada
-<<<<<<< HEAD
-final presignedUrlProvider = FutureProvider.family<String, String>((ref, lessonVideoKey) async {
-=======
 final presignedUrlProvider =
     FutureProvider.family<String, String>((ref, lessonVideoKey) async {
->>>>>>> origin/Development
   final response = await _dio.get(
     "/s3/file/download-url",
     queryParameters: {
