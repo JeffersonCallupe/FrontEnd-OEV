@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 final searchQueryProvider = StateProvider<String>((ref) => "");
 final selectedCategoryProvider = StateProvider<String?>((ref) => null);
 
-// coment
 
 class CourseList extends ConsumerWidget {
   const CourseList({super.key});
@@ -41,9 +40,7 @@ class CourseList extends ConsumerWidget {
             const SizedBox(height: 20),
             const SizedBox(
               height: 180,
-              child: Placeholder( // Placeholder for the recommended courses slider
-                color: Colors.grey,
-              ),
+              child:  Placeholder(), // Placeholder for the banner or carousel
             ),
             const SizedBox(height: 10),
             Row(
