@@ -22,8 +22,4 @@ class CourseRequestDTO {
       'price': price,
     };
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/Development

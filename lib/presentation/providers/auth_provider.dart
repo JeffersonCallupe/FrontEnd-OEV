@@ -1,8 +1,4 @@
 import 'dart:convert';
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/Development
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oev_mobile_app/domain/entities/dto/request/user_register_dto.dart';
 import 'package:oev_mobile_app/domain/entities/token/token_model.dart';

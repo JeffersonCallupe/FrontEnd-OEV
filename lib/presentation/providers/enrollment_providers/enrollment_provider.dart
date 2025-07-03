@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-// lib/presentation/providers/enrollment_providers/enrollment_provider.dart
-=======
->>>>>>> origin/Development
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oev_mobile_app/domain/repositories/enrollment_repository.dart';
 import 'package:oev_mobile_app/domain/datasources/enrollment_datasource.dart';
