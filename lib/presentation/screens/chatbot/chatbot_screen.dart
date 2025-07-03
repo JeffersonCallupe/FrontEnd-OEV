@@ -66,8 +66,8 @@ class ChatScreen extends ConsumerWidget {
         ),
         Expanded(
           child: messages.isEmpty
-              ? _buildEmptyChatUI(ref) // UI cuando el chat está vacío
-              : _buildChatMessages(ref, messages), // UI del chat con mensajes
+              ? _buildEmptyChatUI(ref) 
+              : _buildChatMessages(ref, messages), 
         ),
         if (messages.isNotEmpty) _buildChatControls(context, ref), // Controles cuando hay mensajes
       ],
