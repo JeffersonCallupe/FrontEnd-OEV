@@ -27,7 +27,8 @@ class Lesson {
       duration: json['duration'],
       sequenceOrder: json['sequenceOrder'] ?? 0,
       createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      updatedAt:
+          json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
       courseId: json['courseId'],
     );
   }

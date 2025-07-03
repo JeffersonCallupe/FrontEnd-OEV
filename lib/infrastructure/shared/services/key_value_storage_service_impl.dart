@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import 'package:oev_mobile_app/domain/entities/token/token_model.dart';
 import 'dart:convert';
+=======
+import 'dart:convert';
+import 'package:oev_mobile_app/domain/entities/token/token_model.dart';
+>>>>>>> origin/Development
 import 'package:oev_mobile_app/infrastructure/mappers/token_mapper.dart';
 import 'package:oev_mobile_app/infrastructure/shared/services/key_value_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +25,15 @@ class KeyValueStorageServiceImpl extends KeyValueStorageService {
       case String:
         return prefs.getString(key) as T?;
 
+<<<<<<< HEAD
+=======
+      case bool:
+        return prefs.getBool(key) as T?;
+
+      case double:
+        return prefs.getDouble(key) as T?;
+
+>>>>>>> origin/Development
       case Token:
         final jsonString = prefs.getString(key);
         if (jsonString != null) {
@@ -28,7 +42,7 @@ class KeyValueStorageServiceImpl extends KeyValueStorageService {
         return null;
 
       default:
-        throw UnimplementedError('GET not implemented for type ${T.runtimeType}');
+      throw UnimplementedError('GET not implemented for type $T');
     }
   }
 
@@ -51,13 +65,24 @@ class KeyValueStorageServiceImpl extends KeyValueStorageService {
         prefs.setString(key, value as String);
         break;
 
+<<<<<<< HEAD
+=======
+      case bool:
+        prefs.setBool(key, value as bool);
+        break;
+
+      case double:
+        prefs.setDouble(key, value as double);
+        break;
+
+>>>>>>> origin/Development
       case Token:
         final jsonString = json.encode(TokenMapper.entityToJson(value as Token));
         await prefs.setString(key, jsonString);
         break;
 
       default:
-        throw UnimplementedError('Set not implemented for type ${T.runtimeType}');
+        throw UnimplementedError('Set not implemented for type $T');
     }
   }
 }

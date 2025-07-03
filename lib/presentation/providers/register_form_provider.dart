@@ -225,4 +225,8 @@ class RegisterFormState {
     isPasswordsMatch: $isPasswordsMatch
 ''';
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/Development

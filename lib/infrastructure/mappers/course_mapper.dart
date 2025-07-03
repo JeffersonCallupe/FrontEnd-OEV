@@ -17,8 +17,12 @@ class CourseMapper {
       totalStudents: json['totalStudents'] ?? 0,
       favorite: json['favorite'] ?? 0,
       status: json['status'] ?? '',
-      creationDate: json['creationDate'] != null ? DateTime.parse(json['creationDate']) : DateTime.now(),
-      lastUpdate: json['lastUpdate'] != null ? DateTime.parse(json['lastUpdate']) : DateTime.now(),
+      creationDate: json['creationDate'] != null
+          ? DateTime.parse(json['creationDate'])
+          : DateTime.now(),
+      lastUpdate: json['lastUpdate'] != null
+          ? DateTime.parse(json['lastUpdate'])
+          : DateTime.now(),
       userId: json['userId'],
       instructorName: json['instructorName'] ?? 'Instructor Name',
     );

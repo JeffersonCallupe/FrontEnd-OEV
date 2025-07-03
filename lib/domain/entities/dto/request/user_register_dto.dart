@@ -40,4 +40,8 @@ class UserRegisterDto {
       role: json['role'],
     );
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/Development

@@ -139,30 +139,6 @@ class CourseDatasourceImpl implements CourseDatasource {
   }
 
   @override
-  Future<List<Course>> getRecommendedCourses() async {
-    try {
-      // Get all courses first
-      final allCourses = await getCourses();
-
-      // Get enrollment counts for each course
-      final coursesWithEnrollments = await Future.wait(
-        allCourses.map((course) async {
-          final enrollmentCount = await getEnrolledUsersCount(course.id);
-          return MapEntry(course, enrollmentCount);
-        }),
-      );
-
-      // Sort courses by enrollment count
-      coursesWithEnrollments.sort((a, b) => b.value.compareTo(a.value));
-
-      // Return sorted courses
-      return coursesWithEnrollments.map((entry) => entry.key).toList();
-    } catch (e) {
-      throw Exception('Error al obtener cursos recomendados: $e');
-    }
-  }
-
-  @override
   Future<void> updateCourse(
       int courseId, Map<String, dynamic> courseData) async {
     try {

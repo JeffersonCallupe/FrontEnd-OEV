@@ -13,6 +13,5 @@ abstract class CourseDatasource {
       int userId, int courseId);
   Future<void> deleteCourse(int courseId);
   Future<int> getEnrolledUsersCount(int courseId);
-  Future<List<Course>> getRecommendedCourses();
   Future<void> updateCourse(int courseId, Map<String, dynamic> courseData);
 }

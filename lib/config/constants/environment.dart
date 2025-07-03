@@ -5,6 +5,8 @@ class Environment {
     await dotenv.load(fileName: ".env");
   }
 
-  static String apiUrl = dotenv.env['API_URL'] ?? 'No esta configurado el API_URL';
-  static String bucketName = dotenv.env['BUCKET_NAME'] ?? 'No esta configurado el BUCKET_NAME';
+  static String apiUrl =
+      dotenv.env['API_URL'] ?? 'No esta configurado el API_URL';
+  static String bucketName =
+      dotenv.env['BUCKET_NAME'] ?? 'No esta configurado el BUCKET_NAME';
 }

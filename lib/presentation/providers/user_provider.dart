@@ -28,4 +28,8 @@ class UserUpdateNotifier extends StateNotifier<AsyncValue<void>> {
       rethrow;
     }
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/Development

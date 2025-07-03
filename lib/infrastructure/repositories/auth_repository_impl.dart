@@ -8,7 +8,8 @@ import 'package:oev_mobile_app/infrastructure/datasources/auth_datasources_impl.
 class AuthRepositoryImpl extends AuthRepository {
   final AuthDataSource dataSource;
 
-  AuthRepositoryImpl({AuthDataSource? dataSource}) : dataSource = dataSource ?? AuthDataSourceImpl();
+  AuthRepositoryImpl({AuthDataSource? dataSource})
+      : dataSource = dataSource ?? AuthDataSourceImpl();
 
   @override
   Future<Token> checkAuthStatus(Token token) {

@@ -4,4 +4,8 @@ import 'package:oev_mobile_app/infrastructure/repositories/course_repository_imp
 
 final courseRepositoryProvider = Provider<CourseRepository>((ref) {
   return CourseRepositoryImpl();
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> origin/Development

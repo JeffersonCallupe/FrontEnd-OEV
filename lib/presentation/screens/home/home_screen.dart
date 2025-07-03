@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
-import 'package:oev_mobile_app/presentation/screens/chatbot/chatbot_screen.dart';
-import 'package:oev_mobile_app/presentation/widgets/conference/conference_list.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/course_list.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/my_courses.dart';
 
@@ -87,7 +85,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             canvasColor: const Color(0xff2a2c3e),
           ),
           child: BottomNavigationBar(
-            items: List.generate(4, (index) {
+            items: List.generate(3, (index) {
               bool isSelected = _selectedIndex == index;
               return BottomNavigationBarItem(
                 icon: Container(
@@ -103,9 +101,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                           ? Icons.home
                           : index == 1
                               ? Icons.menu_book
-                              : index == 2
-                                  ? Icons.video_call
-                                  : Icons.smart_toy_rounded,
+                              : Icons.smart_toy_rounded,
                       color: isSelected ? selectedColor : unselectedColor,
                     ),
                   ),
@@ -140,10 +136,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         );
       case 2:
         return const Center(
-          child: ConferenceList(),
+          child: Text('Vista Chatbot', style: TextStyle(color: Colors.white)),
         );
-      case 3:
-        return Center(child: ChatScreen());
       default:
         return const Center(
           child: Text('VistaDefecto', style: TextStyle(color: Colors.white)),

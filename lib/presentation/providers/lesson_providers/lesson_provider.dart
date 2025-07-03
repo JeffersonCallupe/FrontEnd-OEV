@@ -15,4 +15,8 @@ final lessonProvider = FutureProvider.autoDispose.family<List<Lesson>, int>((ref
 final lessonDeleteProvider = FutureProvider.autoDispose.family<void, int>((ref, lessonId) async {
   final repository = ref.watch(lessonRepositoryProvider);
   return repository.deleteLessonById(lessonId);
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> origin/Development
