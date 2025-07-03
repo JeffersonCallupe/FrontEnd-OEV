@@ -1,24 +1,38 @@
+// Importación de paquetes necesarios
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/courses_providers/courses_provider.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/course_card.dart';
 
+// Provider que guarda el texto de búsqueda del usuario
 final searchQueryProvider = StateProvider<String>((ref) => "");
+
+// Provider que guarda la categoría seleccionada (puede ser null si no se ha seleccionado ninguna)
 final selectedCategoryProvider = StateProvider<String?>((ref) => null);
 
-// coment
-
+// Widget principal que consume providers
 class CourseList extends ConsumerWidget {
   const CourseList({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Obtiene la paleta de colores del tema actual
     final colors = Theme.of(context).colorScheme;
+
+    // Observa el estado asincrónico de los cursos
     final asyncCourses = ref.watch(coursesProvider);
+
+    // Observa el valor actual del texto de búsqueda
     final searchQuery = ref.watch(searchQueryProvider);
+
+    // Observa la categoría seleccionada
     final selectedCategory = ref.watch(selectedCategoryProvider);
+
+    // Obtiene el usuario autenticado (token y datos)
     final loggedUser = ref.read(authProvider).token;
 
+    // Reinicia la categoría seleccionada cuando cambia el estado de autenticación
     ref.listen(authProvider, (previous, next) {
       ref.read(selectedCategoryProvider.notifier).state = null;
     });
@@ -29,6 +43,7 @@ class CourseList extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // Muestra mensaje de bienvenida con el nombre del usuario logueado
             Text(
               'Bienvenido, ${loggedUser?.name ?? 'User'}',
               style: const TextStyle(
@@ -36,17 +51,24 @@ class CourseList extends ConsumerWidget {
                   fontWeight: FontWeight.bold,
                   color: Colors.white),
             ),
+
+            // Mensaje secundario
             const Text(
               'Tenemos sugerencias para ti basadas en tus intereses',
               style: TextStyle(color: Colors.white70),
             ),
+
             const SizedBox(height: 20),
+
+            // Fila con campo de búsqueda y botón de filtro
             Row(
               children: [
+                // Campo de texto para buscar cursos
                 Expanded(
                   child: TextField(
                     cursorColor: colors.primary,
                     onChanged: (value) {
+                      // Actualiza el valor del texto de búsqueda en el provider
                       ref
                           .read(searchQueryProvider.notifier)
                           .update((state) => value);
@@ -68,6 +90,8 @@ class CourseList extends ConsumerWidget {
                     ),
                   ),
                 ),
+
+                // Botón que abre el cuadro de diálogo de selección de categoría
                 IconButton(
                   icon: const Icon(Icons.filter_list, color: Colors.white),
                   onPressed: () {
@@ -86,6 +110,7 @@ class CourseList extends ConsumerWidget {
                                 fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
+                          // Lista de categorías disponibles
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -102,6 +127,7 @@ class CourseList extends ConsumerWidget {
                                       style:
                                           const TextStyle(color: Colors.white)),
                                   onTap: () {
+                                    // Establece la categoría seleccionada en el provider
                                     ref
                                         .read(selectedCategoryProvider.notifier)
                                         .state = category;
@@ -118,7 +144,10 @@ class CourseList extends ConsumerWidget {
                 ),
               ],
             ),
+
             const SizedBox(height: 15),
+
+            // Si hay una categoría seleccionada, se muestra como un "chip" con opción de quitarla
             if (selectedCategory != null)
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 12),
@@ -131,11 +160,13 @@ class CourseList extends ConsumerWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // Nombre de la categoría
                     Text(
                       selectedCategory,
                       style: const TextStyle(color: Colors.white),
                     ),
                     const SizedBox(width: 8),
+                    // Botón para quitar el filtro
                     GestureDetector(
                       onTap: () {
                         ref.read(selectedCategoryProvider.notifier).state =
@@ -147,18 +178,25 @@ class CourseList extends ConsumerWidget {
                   ],
                 ),
               ),
+
             const SizedBox(height: 15),
+
+            // Sección que muestra los cursos (dependiendo del estado del provider)
             asyncCourses.when(
               data: (courses) {
+                // Filtrado de cursos por búsqueda y categoría
                 final filteredCourses = courses.where((course) {
                   final matchesSearch = course.name
                       .toLowerCase()
                       .contains(searchQuery.toLowerCase());
+
                   final matchesCategory = selectedCategory == null ||
                       course.category == selectedCategory;
+
                   return matchesSearch && matchesCategory;
                 }).toList();
 
+                // Si no hay cursos luego de filtrar
                 if (filteredCourses.isEmpty) {
                   return const Center(
                     child: Text(
@@ -168,14 +206,17 @@ class CourseList extends ConsumerWidget {
                   );
                 }
 
+                // Muestra los cursos filtrados como tarjetas en una grilla
                 return GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true, // Evita que ocupe toda la pantalla
+                  physics:
+                      const NeverScrollableScrollPhysics(), // Desactiva scroll interno
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+                    crossAxisCount: 2, // 2 columnas
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
-                    childAspectRatio: 4 / 4.4,
+                    childAspectRatio:
+                        4 / 4.4, // Tamaño relativo de las tarjetas
                   ),
                   itemCount: filteredCourses.length,
                   itemBuilder: (context, index) {
@@ -183,7 +224,10 @@ class CourseList extends ConsumerWidget {
                   },
                 );
               },
+              // Mientras se carga, muestra un spinner
               loading: () => const Center(child: CircularProgressIndicator()),
+
+              // Si hay error, lo muestra en pantalla
               error: (error, stack) => Center(child: Text('Error: $error')),
             ),
           ],
