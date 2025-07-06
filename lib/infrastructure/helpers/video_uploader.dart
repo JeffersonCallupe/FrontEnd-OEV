@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:logging/logging.dart';
 
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,7 +8,9 @@ import 'package:oev_mobile_app/domain/repositories/lesson_repository.dart';
 import 'package:oev_mobile_app/infrastructure/repositories/lesson_repository_impl.dart';
 import 'package:oev_mobile_app/domain/entities/lesson/lesson_model.dart';
 
+
 class VideoUploader {
+  final _logger = Logger('VideoUploader');
   final Dio _dio = Dio(
     BaseOptions(
       baseUrl: Environment.apiUrl,
@@ -44,14 +47,14 @@ class VideoUploader {
         return response.data['url'];
       }
     } catch (e) {
-      print("Error al obtener la URL firmada: $e");
+      _logger.severe("Error al obtener la URL firmada: $e");
     }
     return null;
   }
 
   Future<bool> uploadVideoToS3(File videoFile, String presignedUrl) async {
     try {
-      print("Iniciando subida del video...");
+      _logger.info("Iniciando subida del video...");
 
       var fileStream = videoFile.openRead();
       var length = await videoFile.length();
@@ -68,43 +71,43 @@ class VideoUploader {
       );
 
       if (response.statusCode == 200) {
-        print("✅ Video subido correctamente!");
+        _logger.info("Video subido correctamente!");
         return true;
       }
     } catch (e) {
-      print("❌ Excepción al subir el video: $e");
+      _logger.severe("Excepción al subir el video: $e");
     }
     return false;
   }
 
   /// Selecciona, sube video y crea la lección
   Future<void> uploadLessonVideo(int courseId, String lessonTitle, File? videoFile) async {
-    // File? videoFile = await pickVideo();
+
     if (videoFile == null) {
-      print("No se seleccionó ningún video.");
+      _logger.warning("No se seleccionó ningún video.");
       return;
     }
 
-    String lessonVideoFolder = 'lesson-video';
+    String lessonVideoFolder = Environment.videoFolder;
     String fileName = '$lessonVideoFolder/${courseId}_${DateTime.now().millisecondsSinceEpoch}.mp4';
     String? presignedUrl = await getPresignedUrl(fileName);
 
     if (presignedUrl == null) {
-      print("No se pudo obtener la URL firmada.");
+      _logger.severe("No se pudo obtener la URL firmada.");
       return;
     }
 
     bool success = await uploadVideoToS3(videoFile, presignedUrl);
     if (!success) {
-      print("Hubo un problema en la subida.");
+      _logger.severe("Hubo un problema en la subida.");
       return;
     }
 
     try {
       Lesson newLesson = await lessonRepository.createLesson(courseId, lessonTitle, fileName);
-      print("✅ Lección creada: ${newLesson.title}");
+      _logger.info("Lección creada: ${newLesson.title}");
     } catch (e) {
-      print("❌ Error al crear la lección: $e");
+      _logger.severe("Error al crear la lección: $e");
     }
   }
 }

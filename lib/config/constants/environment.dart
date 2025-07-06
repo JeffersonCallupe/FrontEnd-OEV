@@ -9,4 +9,6 @@ class Environment {
       dotenv.env['API_URL'] ?? 'No esta configurado el API_URL';
   static String bucketName =
       dotenv.env['BUCKET_NAME'] ?? 'No esta configurado el BUCKET_NAME';
+
+  static String videoFolder = dotenv.env['VIDEO_FOLDER'] ?? 'No esta configurado el VIDEO_FOLDER';
 }
