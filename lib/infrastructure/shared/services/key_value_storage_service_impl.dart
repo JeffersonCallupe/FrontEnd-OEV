@@ -1,3 +1,6 @@
+import 'package:oev_mobile_app/domain/entities/token/token_model.dart';
+import 'dart:convert';
+import 'package:oev_mobile_app/infrastructure/mappers/token_mapper.dart';
 import 'package:oev_mobile_app/infrastructure/shared/services/key_value_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +19,13 @@ class KeyValueStorageServiceImpl extends KeyValueStorageService {
 
       case String:
         return prefs.getString(key) as T?;
+
+      case Token:
+        final jsonString = prefs.getString(key);
+        if (jsonString != null) {
+          return TokenMapper.userJsonToEntity(json.decode(jsonString)) as T?;
+        }
+        return null;
 
       default:
         throw UnimplementedError('GET not implemented for type ${T.runtimeType}');
@@ -39,6 +49,11 @@ class KeyValueStorageServiceImpl extends KeyValueStorageService {
 
       case String:
         prefs.setString(key, value as String);
+        break;
+
+      case Token:
+        final jsonString = json.encode(TokenMapper.entityToJson(value as Token));
+        await prefs.setString(key, jsonString);
         break;
 
       default:

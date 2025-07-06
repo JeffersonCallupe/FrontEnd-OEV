@@ -24,7 +24,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: ref.read(authProvider).token?.name ?? 'xdxd test',
+      title: ref.read(authProvider).token?.name ??,
       home: Scaffold(
         backgroundColor: const Color.fromRGBO(30, 30, 44, 0.996),
         appBar: AppBar(
@@ -34,16 +34,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             child: Image.asset('assets/images/logo_unmsm.png'),
           ),
           actions: [
-            IconButton(
-              onPressed: () {
-                // Acción para el ícono de filtrado
-                setState(() {
-                  _showFilterChip =
-                      true; // Mostrar el Chip al presionar el filtro
-                });
-              },
-              icon: const Icon(Icons.filter_list, color: Colors.white),
-            ),
             IconButton(
               onPressed: () {
                 context.push('/profile');

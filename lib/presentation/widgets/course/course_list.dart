@@ -33,10 +33,7 @@ class CourseList extends ConsumerWidget {
           children: [
             Text(
               'Bienvenido, ${loggedUser?.name ?? 'User'}',
-              style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
             ),
             const Text(
               'Tenemos sugerencias para ti basadas en tus intereses',
@@ -54,9 +51,7 @@ class CourseList extends ConsumerWidget {
                   child: TextField(
                     cursorColor: colors.primary,
                     onChanged: (value) {
-                      ref
-                          .read(searchQueryProvider.notifier)
-                          .update((state) => value);
+                      ref.read(searchQueryProvider.notifier).update((state) => value);
                     },
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
@@ -88,30 +83,17 @@ class CourseList extends ConsumerWidget {
                           ),
                           title: const Text(
                             'Seleccionar categoría',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              ...[
-                                'Tecnología y Programación',
-                                'Negocios y Emprendimiento',
-                                'Diseño',
-                                'Ciencias y Matemáticas',
-                                'Idiomas',
-                                'Desarrollo Personal'
-                              ].map((category) {
+                              ...['Tecnología y Programación', 'Negocios y Emprendimiento', 'Diseño', 'Ciencias y Matemáticas', 'Idiomas', 'Desarrollo Personal'].map((category) {
                                 return ListTile(
-                                  title: Text(category,
-                                      style:
-                                          const TextStyle(color: Colors.white)),
+                                  title: Text(category, style: const TextStyle(color: Colors.white)),
                                   onTap: () {
-                                    ref
-                                        .read(selectedCategoryProvider.notifier)
-                                        .state = category;
+                                    ref.read(selectedCategoryProvider.notifier).state = category;
                                     Navigator.pop(context);
                                   },
                                 );
@@ -129,8 +111,7 @@ class CourseList extends ConsumerWidget {
             if (selectedCategory != null)
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 12),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
                 decoration: BoxDecoration(
                   color: colors.primary,
                   borderRadius: BorderRadius.circular(20),
@@ -145,11 +126,9 @@ class CourseList extends ConsumerWidget {
                     const SizedBox(width: 8),
                     GestureDetector(
                       onTap: () {
-                        ref.read(selectedCategoryProvider.notifier).state =
-                            null;
+                        ref.read(selectedCategoryProvider.notifier).state = null;
                       },
-                      child: const Icon(Icons.close,
-                          color: Colors.white, size: 16),
+                      child: const Icon(Icons.close, color: Colors.white, size: 16),
                     ),
                   ],
                 ),
@@ -158,11 +137,8 @@ class CourseList extends ConsumerWidget {
             asyncCourses.when(
               data: (courses) {
                 final filteredCourses = courses.where((course) {
-                  final matchesSearch = course.name
-                      .toLowerCase()
-                      .contains(searchQuery.toLowerCase());
-                  final matchesCategory = selectedCategory == null ||
-                      course.category == selectedCategory;
+                  final matchesSearch = course.name.toLowerCase().contains(searchQuery.toLowerCase());
+                  final matchesCategory = selectedCategory == null || course.category == selectedCategory;
                   return matchesSearch && matchesCategory;
                 }).toList();
 
