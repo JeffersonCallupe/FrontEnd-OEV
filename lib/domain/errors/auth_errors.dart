@@ -10,3 +10,11 @@ class CustomError implements Exception {
   // final int errorCode;
   CustomError(this.message);
 }
+
+class NotAuthorizedException implements Exception {
+  final String message;
+  NotAuthorizedException(this.message);
+  
+  @override
+  String toString() => message;
+}
