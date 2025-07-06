@@ -37,9 +37,9 @@ class UserDataSourceImpl implements UserDataSource {
       final bearerToken = token.startsWith('Bearer ') ? token : 'Bearer $token';
       print('Using bearerToken: $bearerToken');
       
-      // Corregir la URL para que coincida con el controlador
+      // Corregir la URL - el Environment.apiUrl ya incluye /api
       final response = await dio.patch(
-        '/api/user/updateUser/$numericId',  // ✅ URL corregida
+        '/user/updateUser/$numericId',  // ✅ URL corregida sin /api
         data: formattedData,
         options: Options(
           headers: {
@@ -67,9 +67,18 @@ class UserDataSourceImpl implements UserDataSource {
           throw Exception('Respuesta del servidor inválida');
         }
       } else {
-        final errorMessage = response.data?['message'] ??
-            'Error desconocido en la actualización';
-        throw Exception('Error del servidor: $errorMessage');
+        // Manejo mejorado de errores
+        String errorMessage = 'Error desconocido en la actualización';
+        
+        if (response.statusCode == 404) {
+          errorMessage = 'Usuario no encontrado o endpoint incorrecto';
+        } else if (response.data != null && response.data is Map<String, dynamic>) {
+          errorMessage = response.data['message'] ?? errorMessage;
+        } else if (response.data != null && response.data is String) {
+          errorMessage = response.data;
+        }
+        
+        throw Exception('Error del servidor (${response.statusCode}): $errorMessage');
       }
     } on DioException catch (e) {
       print('DioError: ${e.type}');
@@ -86,4 +95,4 @@ class UserDataSourceImpl implements UserDataSource {
       throw Exception('Error inesperado: $e');
     }
   }
-} 
+}
