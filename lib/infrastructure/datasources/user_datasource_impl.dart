@@ -21,24 +21,25 @@ class UserDataSourceImpl implements UserDataSource {
       // Aseguramos que el ID sea enviado como un número
       final numericId = id.toInt();
       print('Updating user with ID: $numericId');
-      // Convertimos el userData para asegurar tipos correctos
+      
+      // NO incluimos el ID en el cuerpo del request, solo en la URL
       final Map<String, dynamic> formattedData = {
-        'id': numericId, // Aseguramos que sea numérico
         'name': userData['name'] as String,
         'paternalSurname': userData['paternalSurname'] as String,
         'maternalSurname': userData['maternalSurname'] as String,
         'email': userData['email'] as String,
         'phone': userData['phone'] as String,
       };
-          // Asegurarse de que el token tenga el formato correcto 
+      
       print('Update data: $formattedData');
       print('Using token: $token');
+      
       final bearerToken = token.startsWith('Bearer ') ? token : 'Bearer $token';
       print('Using bearerToken: $bearerToken');
       
-    // Cambiamos a PATCH en lugar de PUT
+      // Corregir la URL para que coincida con el controlador
       final response = await dio.patch(
-        '/user/update/$numericId',
+        '/api/user/updateUser/$numericId',  // ✅ URL corregida
         data: formattedData,
         options: Options(
           headers: {
@@ -55,11 +56,16 @@ class UserDataSourceImpl implements UserDataSource {
       print('Response data: ${response.data}');
 
       if (response.statusCode == 401 || response.statusCode == 403) {
-      throw NotAuthorizedException('Sesión expirada o inválida');
+        throw NotAuthorizedException('Sesión expirada o inválida');
       }
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return UserMapper.userJsonToEntity(response.data); 
+        // Verificar si la respuesta es válida antes de mapear
+        if (response.data != null && response.data is Map<String, dynamic>) {
+          return UserMapper.userJsonToEntity(response.data);
+        } else {
+          throw Exception('Respuesta del servidor inválida');
+        }
       } else {
         final errorMessage = response.data?['message'] ??
             'Error desconocido en la actualización';
@@ -80,4 +86,4 @@ class UserDataSourceImpl implements UserDataSource {
       throw Exception('Error inesperado: $e');
     }
   }
-}
+} 
