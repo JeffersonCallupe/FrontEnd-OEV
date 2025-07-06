@@ -10,12 +10,23 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color.fromARGB(255, 30, 30, 44),
-      body: _LoginForm(),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/fondosm.png'), 
+            fit: BoxFit.cover, 
+          ),
+        ),
+        child: const _LoginForm(), 
+      ),
     );
   }
 }
+
+
+
 
 class _LoginForm extends ConsumerWidget {
   const _LoginForm();
@@ -107,7 +118,7 @@ class _LoginForm extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Color.fromARGB(106, 255, 255, 255)),
                   validator: null,
                 ),
               ],
@@ -122,7 +133,7 @@ class _LoginForm extends ConsumerWidget {
                       const Text(
                         'Contraseña',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Color.fromARGB(255, 255, 255, 255),
                           fontSize: 14.0,
                           fontFamily: 'PT Sans',
                         ),
