@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
+import 'package:oev_mobile_app/presentation/widgets/course/course_list.dart';
+import 'package:oev_mobile_app/presentation/widgets/course/my_courses.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   static const String name = 'home_screen';
@@ -13,18 +15,16 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class HomeScreenState extends ConsumerState<HomeScreen> {
   int _selectedIndex = 0;
-  bool _showFilterChip = false; // Controla la visibilidad del Chip
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final List<String> _titles = ["", "", "", ""];
+  final Color selectedColor = Color(0xFF12CDD9);
+  final Color unselectedColor = Colors.white;
+  final Color backgroundColor = Color(0xFF252836);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: ref.read(authProvider).token?.name ?? 'xdxd test',
+      title: ref.read(authProvider).token?.name ??,
       home: Scaffold(
         backgroundColor: const Color.fromRGBO(30, 30, 44, 0.996),
         appBar: AppBar(
@@ -34,16 +34,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             child: Image.asset('assets/images/logo_unmsm.png'),
           ),
           actions: [
-            IconButton(
-              onPressed: () {
-                // Acción para el ícono de filtrado
-                setState(() {
-                  _showFilterChip =
-                      true; // Mostrar el Chip al presionar el filtro
-                });
-              },
-              icon: const Icon(Icons.filter_list, color: Colors.white),
-            ),
             IconButton(
               onPressed: () {
                 context.push('/profile');
@@ -88,18 +78,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             Expanded(
               child: _buildBody(),
             ),
-            if (_showFilterChip)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Chip(
-                  label: const Text('Talleres'),
-                  onDeleted: () {
-                    setState(() {
-                      _showFilterChip = false; // Ocultar el Chip al eliminarlo
-                    });
-                  },
-                ),
-              ),
           ],
         ),
         bottomNavigationBar: Theme(
@@ -107,20 +85,30 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             canvasColor: const Color(0xff2a2c3e),
           ),
           child: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home, color: Colors.lightBlue),
+            items: List.generate(3, (index) {
+              bool isSelected = _selectedIndex == index;
+              return BottomNavigationBarItem(
+                icon: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: isSelected ? backgroundColor : Colors.transparent,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    child: Icon(
+                      index == 0
+                          ? Icons.home
+                          : index == 1
+                              ? Icons.menu_book
+                              : Icons.smart_toy_rounded,
+                      color: isSelected ? selectedColor : unselectedColor,
+                    ),
+                  ),
+                ),
                 label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.menu_book, color: Colors.white),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.video_call, color: Colors.white),
-                label: '',
-              ),
-            ],
+              );
+            }),
             currentIndex: _selectedIndex,
             onTap: (index) {
               setState(() {
@@ -140,7 +128,15 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     switch (_selectedIndex) {
       case 0:
         return const Center(
-          child: Text('Inicio', style: TextStyle(color: Colors.white)),
+          child: CourseList(),
+        );
+      case 1:
+        return const Center(
+          child: MyCourses(),
+        );
+      case 2:
+        return const Center(
+          child: Text('Vista Chatbot', style: TextStyle(color: Colors.white)),
         );
       default:
         return const Center(

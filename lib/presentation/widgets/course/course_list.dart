@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/courses_providers/courses_provider.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/course_card.dart';
+import 'package:go_router/go_router.dart';
 
 // Provider que guarda el texto de búsqueda del usuario
 final searchQueryProvider = StateProvider<String>((ref) => "");
@@ -11,7 +12,6 @@ final searchQueryProvider = StateProvider<String>((ref) => "");
 // Provider que guarda la categoría seleccionada (puede ser null si no se ha seleccionado ninguna)
 final selectedCategoryProvider = StateProvider<String?>((ref) => null);
 
-// Widget principal que consume providers
 class CourseList extends ConsumerWidget {
   const CourseList({super.key});
 
@@ -59,8 +59,11 @@ class CourseList extends ConsumerWidget {
             ),
 
             const SizedBox(height: 20),
-
-            // Fila con campo de búsqueda y botón de filtro
+            const SizedBox(
+              height: 180,
+              child: Placeholder(), // Placeholder for the banner or carousel
+            ),
+            const SizedBox(height: 10),
             Row(
               children: [
                 // Campo de texto para buscar cursos
@@ -68,7 +71,6 @@ class CourseList extends ConsumerWidget {
                   child: TextField(
                     cursorColor: colors.primary,
                     onChanged: (value) {
-                      // Actualiza el valor del texto de búsqueda en el provider
                       ref
                           .read(searchQueryProvider.notifier)
                           .update((state) => value);
@@ -127,7 +129,6 @@ class CourseList extends ConsumerWidget {
                                       style:
                                           const TextStyle(color: Colors.white)),
                                   onTap: () {
-                                    // Establece la categoría seleccionada en el provider
                                     ref
                                         .read(selectedCategoryProvider.notifier)
                                         .state = category;
@@ -146,8 +147,25 @@ class CourseList extends ConsumerWidget {
             ),
 
             const SizedBox(height: 15),
-
-            // Si hay una categoría seleccionada, se muestra como un "chip" con opción de quitarla
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Visibility(
+                    visible: loggedUser!.role == 'INSTRUCTOR',
+                    child: Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.push('/course/create');
+                        },
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [Text('Crear Curso'), Icon(Icons.add)],
+                        ),
+                      ),
+                    )),
+              ],
+            ),
+            const SizedBox(height: 5),
             if (selectedCategory != null)
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 12),
@@ -189,10 +207,8 @@ class CourseList extends ConsumerWidget {
                   final matchesSearch = course.name
                       .toLowerCase()
                       .contains(searchQuery.toLowerCase());
-
                   final matchesCategory = selectedCategory == null ||
                       course.category == selectedCategory;
-
                   return matchesSearch && matchesCategory;
                 }).toList();
 
