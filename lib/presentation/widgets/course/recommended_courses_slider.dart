@@ -1,3 +1,4 @@
+// lib/presentation/widgets/course/recommended_courses_slider.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:card_swiper/card_swiper.dart';
@@ -17,8 +18,7 @@ class RecommendedCoursesSlider extends ConsumerWidget {
           return const SizedBox.shrink();
         }
 
-        final limitedCourses =
-            courses.length >= 3 ? courses.take(3).toList() : courses;
+        final limitedCourses = courses.length >= 3 ? courses.take(3).toList() : courses;
 
         return SizedBox(
           height: 180,
@@ -30,8 +30,7 @@ class RecommendedCoursesSlider extends ConsumerWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          CourseDetailPage(courseId: course.id),
+                      builder: (context) => CourseDetailPage(courseId: course.id),
                     ),
                   );
                 },
@@ -39,8 +38,7 @@ class RecommendedCoursesSlider extends ConsumerWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     image: DecorationImage(
-                      image: NetworkImage(course.imageUrl ??
-                          'https://via.placeholder.com/400x320'),
+                      image: NetworkImage(course.imageUrl ?? 'https://via.placeholder.com/400x320'),
                       fit: BoxFit.cover,
                     ),
                   ),
