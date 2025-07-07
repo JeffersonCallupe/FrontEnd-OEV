@@ -12,7 +12,7 @@ class ChatNotifier extends StateNotifier<List<Message>> {
     BaseOptions(
       // baseUrl: "https://agent-470f8f0e0603da1d8551-vnc7h.ondigitalocean.app/api/v1/",
       // headers: {"Authorization": "Bearer LP0_1V55hh5Llm5aalw0MQLpcetVZPEo"},
-      baseUrl: "https://ieoytyq5zhb23qvtcpwdopcy.agents.do-ai.run/api/v1/chat/completions",
+      baseUrl: "https://ieoytyq5zhb23qvtcpwdopcy.agents.do-ai.run/api/v1",
       headers: {"Authorization": "Bearer KQiGvICbEqld9-tsiBPnCg0_-b4JqujV"},
     ),
   );
@@ -23,7 +23,7 @@ class ChatNotifier extends StateNotifier<List<Message>> {
     state = [...state, Message(content: content, isUser: true)];
     state = [...state, Message(content: "OEV Bot typing...", isUser: false)];
     try {
-      final response = await _dio.post("chat/completions", data: {
+      final response = await _dio.post("/chat/completions", data: {
         "model": "llama-3.1-instruct-8b",
         "messages": [
           {"role": "user", "content": content}
