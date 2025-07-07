@@ -4,10 +4,12 @@ import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
 import 'package:oev_mobile_app/presentation/providers/courses_providers/courses_provider.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/course_card.dart';
 import 'package:go_router/go_router.dart';
+import 'package:oev_mobile_app/presentation/widgets/course/recommended_courses_slider.dart';
 
 final searchQueryProvider = StateProvider<String>((ref) => "");
 final selectedCategoryProvider = StateProvider<String?>((ref) => null);
 
+// coment
 
 class CourseList extends ConsumerWidget {
   const CourseList({super.key});
@@ -40,7 +42,7 @@ class CourseList extends ConsumerWidget {
             const SizedBox(height: 20),
             const SizedBox(
               height: 180,
-              child:  Placeholder(), // Placeholder for the banner or carousel
+              child: RecommendedCoursesSlider(),
             ),
             const SizedBox(height: 10),
             Row(
@@ -106,25 +108,6 @@ class CourseList extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Visibility(
-                    visible: loggedUser!.role == 'INSTRUCTOR',
-                    child: Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          context.push('/course/create');
-                        },
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [Text('Crear Curso'), Icon(Icons.add)],
-                        ),
-                      ),
-                    )),
-              ],
-            ),
-            const SizedBox(height: 5),
             if (selectedCategory != null)
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 12),
