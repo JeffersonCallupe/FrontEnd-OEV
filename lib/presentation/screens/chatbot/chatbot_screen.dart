@@ -10,10 +10,14 @@ class ChatNotifier extends StateNotifier<List<Message>> {
   ChatNotifier() : super([]);
   final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: "https://agent-470f8f0e0603da1d8551-vnc7h.ondigitalocean.app/api/v1/",
-      headers: {"Authorization": "Bearer LP0_1V55hh5Llm5aalw0MQLpcetVZPEo"},
+      // baseUrl: "https://agent-470f8f0e0603da1d8551-vnc7h.ondigitalocean.app/api/v1/",
+      // headers: {"Authorization": "Bearer LP0_1V55hh5Llm5aalw0MQLpcetVZPEo"},
+      baseUrl: "https://ieoytyq5zhb23qvtcpwdopcy.agents.do-ai.run/api/v1/chat/completions",
+      headers: {"Authorization": "Bearer KQiGvICbEqld9-tsiBPnCg0_-b4JqujV"},
     ),
   );
+// oAmWJsXqmHRRp2Zl1T6t_d22AbwHiX2X
+// KQiGvICbEqld9-tsiBPnCg0_-b4JqujV
 
   Future<void> sendMessage(String content) async {
     state = [...state, Message(content: content, isUser: true)];
