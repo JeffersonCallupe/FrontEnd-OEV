@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
+import 'package:oev_mobile_app/presentation/screens/chatbot/chatbot_screen.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/course_list.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/my_courses.dart';
 
@@ -135,8 +136,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           child: MyCourses(),
         );
       case 2:
-        return const Center(
-          child: Text('Vista Chatbot', style: TextStyle(color: Colors.white)),
+        return  Center(
+          child: ChatScreen(),
         );
       default:
         return const Center(
