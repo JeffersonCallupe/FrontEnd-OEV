@@ -24,7 +24,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: ref.read(authProvider).token?.name ?? 'xdxd test',
+      title: ref.read(authProvider).token?.name ?? 'User Mock',
       home: Scaffold(
         backgroundColor: const Color.fromRGBO(30, 30, 44, 0.996),
         appBar: AppBar(

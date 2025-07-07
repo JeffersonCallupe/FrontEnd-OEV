@@ -162,10 +162,10 @@ class LessonCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         leading: Icon(
-          lesson.status == 'COMPLETED'
+          lesson.status.toUpperCase() == 'COMPLETED'
               ? Icons.check_circle
               : Icons.radio_button_unchecked,
-          color: lesson.status == 'COMPLETED' ? Colors.green : Colors.white,
+          color: lesson.status.toUpperCase() == 'COMPLETED' ? Colors.green : Colors.white,
         ),
         title: Text(
           "Clase $index: ${lesson.lessonTitle}",
