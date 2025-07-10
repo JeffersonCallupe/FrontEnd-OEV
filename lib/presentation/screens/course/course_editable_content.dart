@@ -52,8 +52,7 @@ class CourseEditableContent extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(30, 30, 44, 0.996),
       appBar: AppBar(
-        title: Text('Editar: ${course.name}',
-            style: const TextStyle(color: Colors.white)),
+        title: const Text('', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color.fromRGBO(30, 30, 44, 0.996),
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
@@ -296,21 +295,48 @@ Future<void> _showDeleteConfirmation(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        backgroundColor: const Color(0xFF1E1E2C),
-        title: const Text('Confirmar eliminación',
-            style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF242636),
+        title: const Text(
+          'Confirmar eliminación',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         content: const Text(
-            'Esta acción eliminará el curso, todas sus lecciones y las inscripciones de los estudiantes. ¿Estás seguro de continuar?',
-            style: TextStyle(color: Colors.white70)),
+          'Esta acción eliminará el curso, todas sus lecciones y las inscripciones de los estudiantes. ¿Estás seguro de continuar?',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14.0,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child:
-                const Text('Cancelar', style: TextStyle(color: Colors.white70)),
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
-          TextButton(
+          FilledButton(
+            style: ButtonStyle(
+              backgroundColor: WidgetStateProperty.all<Color>(Colors.red),
+            ),
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
+            child: const Text(
+              'Eliminar',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       );

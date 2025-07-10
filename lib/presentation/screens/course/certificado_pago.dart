@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:oev_mobile_app/domain/entities/dto/course_enrolled.dart';
 import 'package:flutter/services.dart';
-import 'Comprobante_pago.dart';
+import 'package:oev_mobile_app/presentation/screens/course/comprobante_pago.dart';
 
 class CertificadoPagoScreen extends StatefulWidget {
   final CourseEnrolled courseEnrolled;

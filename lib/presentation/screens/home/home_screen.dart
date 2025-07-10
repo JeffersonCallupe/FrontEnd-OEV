@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oev_mobile_app/presentation/providers/auth_provider.dart';
-import 'package:oev_mobile_app/presentation/widgets/course/course_list.dart';
+import 'package:oev_mobile_app/presentation/screens/chatbot/chatbot_screen.dart';
+import 'package:oev_mobile_app/presentation/widgets/course/home_view.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/my_courses.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -15,7 +16,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class HomeScreenState extends ConsumerState<HomeScreen> {
   int _selectedIndex = 0;
-  final List<String> _titles = ["", "", "", ""];
   final Color selectedColor = Color(0xFF12CDD9);
   final Color unselectedColor = Colors.white;
   final Color backgroundColor = Color(0xFF252836);
@@ -135,8 +135,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           child: MyCourses(),
         );
       case 2:
-        return const Center(
-          child: Text('Vista Chatbot', style: TextStyle(color: Colors.white)),
+        return Center(
+          child: ChatScreen(),
         );
       default:
         return const Center(
