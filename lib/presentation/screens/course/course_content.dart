@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:oev_mobile_app/domain/entities/dto/course_enrolled.dart';
 import 'package:oev_mobile_app/domain/entities/lesson/lesson_progress_model.dart';
 import 'package:oev_mobile_app/presentation/providers/courses_providers/courses_provider.dart';
-import 'package:oev_mobile_app/presentation/screens/course/certificado_pago.dart'; // Importa la pantalla de pago
+import 'package:oev_mobile_app/presentation/screens/course/certificado_pago.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oev_mobile_app/presentation/screens/lesson/video_lesson_screen.dart';
 
@@ -165,7 +165,9 @@ class LessonCard extends StatelessWidget {
           lesson.status.toUpperCase() == 'COMPLETED'
               ? Icons.check_circle
               : Icons.radio_button_unchecked,
-          color: lesson.status.toUpperCase() == 'COMPLETED' ? Colors.green : Colors.white,
+          color: lesson.status.toUpperCase() == 'COMPLETED'
+              ? Colors.green
+              : Colors.white,
         ),
         title: Text(
           "Clase $index: ${lesson.lessonTitle}",

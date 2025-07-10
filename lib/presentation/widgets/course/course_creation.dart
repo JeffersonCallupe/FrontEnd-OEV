@@ -89,10 +89,18 @@ class _CreateCourseScreenState extends ConsumerState<CreateCourseScreen> {
                 const SizedBox(height: 15),
                 _buildTextField(_priceController, 'Precio', isNumeric: true),
                 const SizedBox(height: 30),
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: _createCourse,
-                  child: const Text('Crear Curso'),
-                ),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Crear Curso'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                )
               ],
             ),
           ),

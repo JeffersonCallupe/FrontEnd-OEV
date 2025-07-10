@@ -9,8 +9,6 @@ import 'package:oev_mobile_app/presentation/widgets/course/recommended_courses_s
 final searchQueryProvider = StateProvider<String>((ref) => "");
 final selectedCategoryProvider = StateProvider<String?>((ref) => null);
 
-// coment
-
 class CourseList extends ConsumerWidget {
   const CourseList({super.key});
   @override
@@ -115,7 +113,7 @@ class CourseList extends ConsumerWidget {
                                     Navigator.pop(context);
                                   },
                                 );
-                              }).toList(),
+                              }),
                             ],
                           ),
                         );
@@ -129,19 +127,21 @@ class CourseList extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Visibility(
-                    visible: loggedUser!.role == 'INSTRUCTOR',
-                    child: Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          context.push('/course/create');
-                        },
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [Text('Crear Curso'), Icon(Icons.add)],
-                        ),
+                if (loggedUser?.role == 'INSTRUCTOR')
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      context.push('/course/create');
+                    },
+                    icon: const Icon(Icons.add),
+                    label: const Text('Crear Curso'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    )),
+                    ),
+                  ),
               ],
             ),
             const SizedBox(height: 5),

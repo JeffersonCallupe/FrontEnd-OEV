@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:card_swiper/card_swiper.dart';
-// Cambia esta importación:
 import 'package:oev_mobile_app/presentation/providers/courses_providers/recommended_courses_provider.dart';
 import 'package:oev_mobile_app/presentation/widgets/course/course_detail.dart';
 
 class RecommendedCoursesSlider extends ConsumerWidget {
-  const RecommendedCoursesSlider({Key? key}) : super(key: key);
+  const RecommendedCoursesSlider({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -158,9 +157,9 @@ class RecommendedCoursesSlider extends ConsumerWidget {
                 size: 48,
               ),
               const SizedBox(height: 8),
-              Text(
+              const Text(
                 'Error al cargar cursos',
-                style: const TextStyle(color: Colors.white70),
+                style: TextStyle(color: Colors.white70),
               ),
               const SizedBox(height: 4),
               Text(
